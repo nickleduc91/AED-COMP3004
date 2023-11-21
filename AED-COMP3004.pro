@@ -9,10 +9,18 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    aed.cpp \
+    controlpanel.cpp \
+    display.cpp \
+    electrode.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    aed.h \
+    controlpanel.h \
+    display.h \
+    electrode.h \
     mainwindow.h
 
 FORMS += \
