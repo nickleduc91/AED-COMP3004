@@ -259,19 +259,6 @@ border-radius:35px;
      <string>Change Batteries</string>
     </property>
    </widget>
-   <widget class="QPlainTextEdit" name="plainTextEdit_7">
-    <property name="geometry">
-     <rect>
-      <x>250</x>
-      <y>460</y>
-      <width>104</width>
-      <height>70</height>
-     </rect>
-    </property>
-    <property name="plainText">
-     <string>Will IS A MUNCH</string>
-    </property>
-   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
