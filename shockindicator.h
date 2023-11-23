@@ -1,0 +1,4 @@
+#ifndef SHOCKINDICATOR_H
+#define SHOCKINDICATOR_H
+
+#endif // SHOCKINDICATOR_H
