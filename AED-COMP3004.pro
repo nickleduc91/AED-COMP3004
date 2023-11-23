@@ -9,25 +9,25 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    aed.cpp \
-    controlpanel.cpp \
-    display.cpp \
-    electrode.cpp \
-    graphics.cpp \
-    lcd.cpp \
+    AED.cpp \
+    ControlPanel.cpp \
+    Display.cpp \
+    Electrode.cpp \
+    Graphics.cpp \
+    LCD.cpp \
+    ShockIndicator.cpp \
     main.cpp \
-    mainwindow.cpp \
-    shockindicator.cpp
+    mainwindow.cpp
 
 HEADERS += \
-    aed.h \
-    controlpanel.h \
-    display.h \
-    electrode.h \
-    graphics.h \
-    lcd.h \
-    mainwindow.h \
-    shockindicator.h
+    AED.h \
+    ControlPanel.h \
+    Display.h \
+    Electrode.h \
+    Graphics.h \
+    LCD.h \
+    ShockIndicator.h \
+    mainwindow.h
 
 FORMS += \
     mainwindow.ui
