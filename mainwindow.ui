@@ -328,8 +328,8 @@ border-radius:35px;
    <widget class="QPushButton" name="pushButton_3">
     <property name="geometry">
      <rect>
-      <x>630</x>
-      <y>200</y>
+      <x>700</x>
+      <y>230</y>
       <width>83</width>
       <height>25</height>
      </rect>
@@ -341,8 +341,8 @@ border-radius:35px;
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>150</y>
+      <x>610</x>
+      <y>160</y>
       <width>141</width>
       <height>51</height>
      </rect>
@@ -580,6 +580,71 @@ color: rgb(255, 255, 255);</string>
       <string>SHOCKS</string>
      </property>
     </widget>
+   </widget>
+   <widget class="QCheckBox" name="checkBox">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>210</y>
+      <width>101</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Left Nipple</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_8">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>230</y>
+      <width>101</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Right Nipple</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton">
+    <property name="geometry">
+     <rect>
+      <x>820</x>
+      <y>310</y>
+      <width>106</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Adult</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_2">
+    <property name="geometry">
+     <rect>
+      <x>890</x>
+      <y>310</y>
+      <width>106</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Child</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_9">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>250</y>
+      <width>101</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Back</string>
+    </property>
    </widget>
   </widget>
  </widget>

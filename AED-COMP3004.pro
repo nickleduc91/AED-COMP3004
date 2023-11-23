@@ -13,15 +13,21 @@ SOURCES += \
     controlpanel.cpp \
     display.cpp \
     electrode.cpp \
+    graphics.cpp \
+    lcd.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    shockindicator.cpp
 
 HEADERS += \
     aed.h \
     controlpanel.h \
     display.h \
     electrode.h \
-    mainwindow.h
+    graphics.h \
+    lcd.h \
+    mainwindow.h \
+    shockindicator.h
 
 FORMS += \
     mainwindow.ui
