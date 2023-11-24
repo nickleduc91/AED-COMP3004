@@ -27,19 +27,6 @@
      <string>Power Button</string>
     </property>
    </widget>
-   <widget class="Line" name="line">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>560</y>
-      <width>751</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
@@ -234,19 +221,6 @@ border-radius:35px;
      </property>
     </widget>
    </widget>
-   <widget class="Line" name="line_2">
-    <property name="geometry">
-     <rect>
-      <x>792</x>
-      <y>10</y>
-      <width>41</width>
-      <height>631</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Vertical</enum>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
@@ -260,7 +234,7 @@ border-radius:35px;
      <string>Status</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_5">
+   <widget class="QLabel" name="checkResponsivenessLabel">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -273,7 +247,7 @@ border-radius:35px;
      <string>Check Resonsiveness</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="checkButton">
     <property name="geometry">
      <rect>
       <x>60</x>
@@ -286,7 +260,7 @@ border-radius:35px;
      <string>Check</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="callButton">
     <property name="geometry">
      <rect>
       <x>330</x>
@@ -312,7 +286,7 @@ border-radius:35px;
      <string>Call For Help</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="attachButton">
     <property name="geometry">
      <rect>
       <x>700</x>
@@ -363,7 +337,7 @@ border-radius:35px;
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_4">
+   <widget class="QPushButton" name="dontTouchButton">
     <property name="geometry">
      <rect>
       <x>530</x>
@@ -395,7 +369,7 @@ border-radius:35px;
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_5">
+   <widget class="QPushButton" name="breatheButton">
     <property name="geometry">
      <rect>
       <x>140</x>
@@ -427,7 +401,7 @@ border-radius:35px;
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_6">
+   <widget class="QPushButton" name="compressButton">
     <property name="geometry">
      <rect>
       <x>340</x>
@@ -488,7 +462,7 @@ border-color: rgb(0, 0, 0);</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QScrollArea" name="consoleScrollArea">
      <property name="geometry">
       <rect>
        <x>4</x>
@@ -620,58 +594,6 @@ color: rgb(255, 255, 255);</string>
      <string>Tear Pads</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_11">
-    <property name="geometry">
-     <rect>
-      <x>400</x>
-      <y>450</y>
-      <width>101</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>1 inch</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_12">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>470</y>
-      <width>101</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>1.5 inches</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_13">
-    <property name="geometry">
-     <rect>
-      <x>400</x>
-      <y>470</y>
-      <width>101</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>2 inches</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="checkBox_14">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>450</y>
-      <width>101</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>0.5 inches</string>
-    </property>
-   </widget>
    <widget class="QSpinBox" name="spinBox">
     <property name="geometry">
      <rect>
@@ -718,25 +640,64 @@ color: rgb(255, 255, 255);</string>
      <string>Victim age (years)</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_15">
+   <widget class="QRadioButton" name="radioButton">
     <property name="geometry">
      <rect>
-      <x>290</x>
-      <y>490</y>
-      <width>101</width>
+      <x>280</x>
+      <y>450</y>
+      <width>106</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>2.5 inches</string>
+     <string>0.5 inches</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="checkBox_16">
+   <widget class="QRadioButton" name="radioButton_2">
     <property name="geometry">
      <rect>
-      <x>400</x>
+      <x>380</x>
+      <y>450</y>
+      <width>106</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>1 inch</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_3">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>470</y>
+      <width>106</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>1.5 inches</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_4">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>470</y>
+      <width>106</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>2 inches</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_5">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
       <y>490</y>
-      <width>101</width>
+      <width>106</width>
       <height>23</height>
      </rect>
     </property>
@@ -744,6 +705,71 @@ color: rgb(255, 255, 255);</string>
      <string>3 inches</string>
     </property>
    </widget>
+   <widget class="QRadioButton" name="radioButton_6">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>490</y>
+      <width>106</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>3.5 inches</string>
+    </property>
+   </widget>
+   <widget class="QFrame" name="aedFrame">
+    <property name="geometry">
+     <rect>
+      <x>-1</x>
+      <y>-1</y>
+      <width>811</width>
+      <height>571</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+   <zorder>aedFrame</zorder>
+   <zorder>powerButton</zorder>
+   <zorder>label</zorder>
+   <zorder>shockButton</zorder>
+   <zorder>plugIn</zorder>
+   <zorder>changeBatteries</zorder>
+   <zorder>plainTextEdit_7</zorder>
+   <zorder>groupBox</zorder>
+   <zorder>label_4</zorder>
+   <zorder>checkResponsivenessLabel</zorder>
+   <zorder>checkButton</zorder>
+   <zorder>callButton</zorder>
+   <zorder>label_6</zorder>
+   <zorder>attachButton</zorder>
+   <zorder>label_7</zorder>
+   <zorder>label_8</zorder>
+   <zorder>dontTouchButton</zorder>
+   <zorder>label_9</zorder>
+   <zorder>breatheButton</zorder>
+   <zorder>label_10</zorder>
+   <zorder>compressButton</zorder>
+   <zorder>groupBox_2</zorder>
+   <zorder>checkBox</zorder>
+   <zorder>checkBox_8</zorder>
+   <zorder>checkBox_9</zorder>
+   <zorder>checkBox_10</zorder>
+   <zorder>spinBox</zorder>
+   <zorder>label_3</zorder>
+   <zorder>spinBox_2</zorder>
+   <zorder>label_14</zorder>
+   <zorder>radioButton</zorder>
+   <zorder>radioButton_2</zorder>
+   <zorder>radioButton_3</zorder>
+   <zorder>radioButton_4</zorder>
+   <zorder>radioButton_5</zorder>
+   <zorder>radioButton_6</zorder>
   </widget>
  </widget>
  <resources/>
