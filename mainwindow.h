@@ -5,6 +5,8 @@
 #include "AED.h"
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QTimer>
+#include <QTime>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,6 +21,7 @@ public:
     ~MainWindow();
 
     void logInfo(const string message);
+    void disableButtons();
 
 private:
     Ui::MainWindow *ui;
@@ -31,9 +34,10 @@ private slots:
     void checkResponsiveness();
     void callForHelp();
     void analyze();
+    void compress();
 
 public slots:
     void handleIlluminateGraphic(int step);
-    void handleLogToDisplay(string message);
+    void handleLogToDisplay(string message, string type);
 };
 #endif // MAINWINDOW_H
