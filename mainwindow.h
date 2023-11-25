@@ -39,5 +39,6 @@ private slots:
 public slots:
     void handleIlluminateGraphic(int step);
     void handleLogToDisplay(string message, string type);
+    void handleStatusUpdate(string message, bool status);
 };
 #endif // MAINWINDOW_H

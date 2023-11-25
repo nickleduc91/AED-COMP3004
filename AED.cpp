@@ -119,3 +119,15 @@ bool AED::checkPads(bool left, bool right, bool back, bool ripped, int age, int 
     return false;
 
 }
+
+bool AED::performSelfTest(bool batteryCapacity,bool defibConnection,bool ecgCircuitry,bool defibCharge,bool microprocessor,bool cprCircuitrySensor,bool audioCircuitry) {
+    string statusMessage = "FAILED";
+    if(!batteryCapacity && !defibConnection && !ecgCircuitry && !defibCharge && !microprocessor && !cprCircuitrySensor && !audioCircuitry){
+        isPassedTest = true;
+        statusMessage = "PASSED";
+    }else {
+        isPassedTest = false;
+    }
+    emit callHandleStatusUpdate(statusMessage,isPassedTest);
+    return isPassedTest;
+}

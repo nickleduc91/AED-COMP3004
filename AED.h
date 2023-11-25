@@ -16,7 +16,7 @@ class AED : public QObject {
     public:
         AED(bool, bool, bool , bool, bool, bool, bool, int age, int weight, bool dry, bool hairy);
         AED();
-        bool performSelfTest();
+        bool performSelfTest(bool batteryCapacity,bool defibConnection,bool ecgCircuitry,bool defibCharge,bool microprocessor,bool cprCircuitrySensor,bool audioCircuitry);
         void handlePowerOn();
         void handleCheckResponsiveness();
         void handleCallForHelp();
@@ -65,9 +65,11 @@ class AED : public QObject {
 
         int currentStep;
 
-private slots:
-    void decrementBatteryLevel();
+    private slots:
+        void decrementBatteryLevel();
 
+    signals:
+        void callHandleStatusUpdate(string message,bool status);
 
 
 };
