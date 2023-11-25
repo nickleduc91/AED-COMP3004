@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(aed->display->getGraphics(), &Graphics::callHandleIlluminateGraphic, this, &MainWindow::handleIlluminateGraphic);
     connect(aed->display->getLCD(), &LCD::callHandlelogToDisplay, this, &MainWindow::handleLogToDisplay);
-
+    connect(aed, &AED::callHandleStatusUpdate, this, &MainWindow::handleStatusUpdate);
 }
 
 MainWindow::~MainWindow()
@@ -46,6 +46,17 @@ MainWindow::~MainWindow()
 
 void MainWindow::powerOn() {
     if(!aed->isOn()) {
+        //setting self test variables from ui
+        bool batteryCapacity = ui->bat_cap->isChecked();
+        bool defibConnection = ui->defib_electro->isChecked();
+        bool ecgCircuitry = ui->ecg_circuitry->isChecked();
+        bool defibCharge = ui->defib_charge_discharge->isChecked();
+        bool microprocessorHardSoftware = ui->microprossesor_hard_soft->isChecked();
+        bool cprCircuitrySensor = ui->cpr_circuitry_sensor->isChecked();
+        bool audioCircuitry = ui->audio_circuitry->isChecked();
+
+        //calling self test and exiting function if test fails
+        if(!aed->performSelfTest(batteryCapacity,defibConnection,ecgCircuitry,defibCharge,microprocessorHardSoftware,cprCircuitrySensor,audioCircuitry)) {return;}
         ui->aedFrame->setStyleSheet(nullptr);
         aed->handlePowerOn();
     } else {
@@ -135,6 +146,16 @@ void MainWindow::handleLogToDisplay(string message, string type) {
 
 }
 
+void MainWindow::handleStatusUpdate(string message,bool status) {
+    ui->status_text->setText(QString::fromStdString(message));
+    if(status){
+        ui->status_text->setStyleSheet("color: green;border: 1px solid green;");
+        ui->test_control_panel->setEnabled(false);
+    }else{
+        ui->status_text->setStyleSheet("color: red;border: 1px solid red;");
+    }
+}
+
 void MainWindow::disableButtons() {
     //Disable all buttons until power is on
     ui->aedFrame->setStyleSheet("background-color: rgba(51, 51, 51, 150);");
@@ -151,4 +172,9 @@ void MainWindow::disableButtons() {
     ui->dontTouchButton->setStyleSheet("");
     ui->compressButton->setStyleSheet("");
     ui->breatheButton->setStyleSheet("");
+
+    //self test panel reset
+    ui->status_text->setText("SELF-TEST STATUS");
+    ui->status_text->setStyleSheet("");
+    ui->test_control_panel->setEnabled(true); //enable test panel when off
 }
