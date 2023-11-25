@@ -21,11 +21,15 @@ class AED : public QObject {
         void handleCheckResponsiveness();
         void handleCallForHelp();
         void handleAnalyze();
+        void handleCompress();
+        void handlePowerOff();
 
         void emitShock();
         void analyzeHeart();
         void checkPads(bool left, bool right, bool back, bool ripped); // Check if the pads were attached properly
         void checkResponsiveness();
+
+        bool isOn() { return isPoweredOn; }
 
         ControlPanel* cp;
         Display* display;
@@ -34,9 +38,10 @@ class AED : public QObject {
     private:
 
         bool isPassedTest;
+        bool isPoweredOn;
 
         //Self-test variables
-        bool batteryFull;
+        int batteryLevel;
         bool electrodeConnected;
         bool ecgCircuitry;
         bool defibCharge;
@@ -56,12 +61,12 @@ class AED : public QObject {
         //Display values
         int graphicStage;
         int shockCount;
-        int elapsedTime;
+        int totalTime;
 
         int currentStep;
 
-        // display->getGraphics()->illuminateGraphic(currentStep);
-        // curentStep++;
+private slots:
+    void decrementBatteryLevel();
 
 
 

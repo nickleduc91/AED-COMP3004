@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFileDialog>
-#include <QTimer>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -10,19 +10,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     //Disable all buttons until power is on
-    ui->aedFrame->setStyleSheet("background-color: rgba(51, 51, 51, 150);");
-    ui->checkButton->setDisabled(true);
-    ui->callButton->setDisabled(true);
-    ui->attachButton->setDisabled(true);
-    ui->dontTouchButton->setDisabled(true);
-    ui->compressButton->setDisabled(true);
-    ui->breatheButton->setDisabled(true);
+    disableButtons();
 
     //Slots
     connect(ui->powerButton, SIGNAL(released()), this, SLOT(powerOn()));
     connect(ui->checkButton, SIGNAL(released()), this, SLOT(checkResponsiveness()));
     connect(ui->callButton, SIGNAL(released()), this, SLOT(callForHelp()));
     connect(ui->attachButton, SIGNAL(released()), this, SLOT(analyze()));
+    connect(ui->dontTouchButton, SIGNAL(released()), this, SLOT(compress()));
 
     //Set up the log info section on the GUI
     label = new QLabel(this);
@@ -49,10 +44,13 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::powerOn() {
-    ui->aedFrame->setStyleSheet(nullptr);
-
-    aed->handlePowerOn();
-
+    if(!aed->isOn()) {
+        ui->aedFrame->setStyleSheet(nullptr);
+        aed->handlePowerOn();
+    } else {
+        disableButtons();
+        aed->handlePowerOff();
+    }
 
 }
 
@@ -66,6 +64,10 @@ void MainWindow::callForHelp() {
 
 void MainWindow::analyze() {
     aed->handleAnalyze();
+}
+
+void MainWindow::compress() {
+
 }
 
 void MainWindow::logInfo(const string message) {
@@ -107,11 +109,39 @@ void MainWindow::handleIlluminateGraphic(int step) {
         ui->dontTouchButton->setEnabled(true);
         ui->attachButton->setStyleSheet("");
         ui->attachButton->setDisabled(true);
+    } else if(step == 5) {
+        ui->compressButton->setStyleSheet("background-color: yellow;");
+        ui->compressButton->setEnabled(true);
+        ui->dontTouchButton->setStyleSheet("");
+        ui->dontTouchButton->setDisabled(true);
     }
 }
 
-void MainWindow::handleLogToDisplay(string message) {
-    logInfo(message);
+void MainWindow::handleLogToDisplay(string message, string type) {
+    if(type == "time") {
+        ui->elapsedTimeLabel->setText(QString::fromStdString(message));
+    } else {
+        logInfo(message);
+    }
+
+}
+
+void MainWindow::disableButtons() {
+    //Disable all buttons until power is on
+    ui->aedFrame->setStyleSheet("background-color: rgba(51, 51, 51, 150);");
+    ui->checkButton->setDisabled(true);
+    ui->callButton->setDisabled(true);
+    ui->attachButton->setDisabled(true);
+    ui->dontTouchButton->setDisabled(true);
+    ui->compressButton->setDisabled(true);
+    ui->breatheButton->setDisabled(true);
+
+    ui->checkButton->setStyleSheet("");
+    ui->callButton->setStyleSheet("");
+    ui->attachButton->setStyleSheet("");
+    ui->dontTouchButton->setStyleSheet("");
+    ui->compressButton->setStyleSheet("");
+    ui->breatheButton->setStyleSheet("");
 }
 
 
