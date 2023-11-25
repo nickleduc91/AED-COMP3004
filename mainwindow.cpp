@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget *scrollContent = new QWidget;
     scrollContent->setLayout(logWindow);
     ui->consoleScrollArea->setWidget(scrollContent);
+
     AED* aedDevice = new AED();
     aed = aedDevice;
 
@@ -63,7 +64,15 @@ void MainWindow::callForHelp() {
 }
 
 void MainWindow::analyze() {
-    aed->handleAnalyze();
+
+    bool isLeftChecked = ui->leftNipBox->isChecked();
+    bool isRightChecked = ui->rightNipBox->isChecked();
+    bool isbackBoxChecked = ui->backBox->isChecked();
+    bool istearPadChecked = ui->tearPadBox->isChecked();
+    int victimAge = ui->ageBox->value();
+    int victimWeight = ui->weightBox->value();
+
+    aed->handleAnalyze(isLeftChecked, isRightChecked, isbackBoxChecked, istearPadChecked, victimAge, victimWeight);
 }
 
 void MainWindow::compress() {
@@ -143,26 +152,3 @@ void MainWindow::disableButtons() {
     ui->compressButton->setStyleSheet("");
     ui->breatheButton->setStyleSheet("");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

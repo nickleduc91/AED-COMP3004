@@ -20,13 +20,13 @@ class AED : public QObject {
         void handlePowerOn();
         void handleCheckResponsiveness();
         void handleCallForHelp();
-        void handleAnalyze();
+        void handleAnalyze(bool left, bool right, bool back, bool ripped, int age, int weight);
         void handleCompress();
         void handlePowerOff();
 
         void emitShock();
         void analyzeHeart();
-        void checkPads(bool left, bool right, bool back, bool ripped); // Check if the pads were attached properly
+        bool checkPads(bool left, bool right, bool back, bool ripped, int age, int weight); // Check if the pads were attached properly
         void checkResponsiveness();
 
         bool isOn() { return isPoweredOn; }
