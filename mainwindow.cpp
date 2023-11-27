@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->callButton, SIGNAL(released()), this, SLOT(callForHelp()));
     connect(ui->attachButton, SIGNAL(released()), this, SLOT(attach()));
     connect(ui->analyzeButton, SIGNAL(released()), this, SLOT(analyze()));
+    connect(ui->shockButton, SIGNAL(released()), this, SLOT(shock()));
 
 
     //Set up the log info section on the GUI
@@ -101,6 +102,10 @@ void MainWindow::analyze() {
     aed->handleAnalyze();
 }
 
+void MainWindow::shock() {
+    aed->handleShock();
+}
+
 void MainWindow::compress() {
 
 }
@@ -133,7 +138,6 @@ void MainWindow::handleIlluminateGraphic(int step) {
         ui->callButton->setEnabled(true);
         ui->checkButton->setStyleSheet("");
         ui->checkButton->setDisabled(true);
-
     } else if(step == 3) {
         ui->attachButton->setStyleSheet("background-color: yellow;");
         ui->attachButton->setEnabled(true);
@@ -147,6 +151,13 @@ void MainWindow::handleIlluminateGraphic(int step) {
     } else if(step == 5) {
         ui->compressButton->setStyleSheet("background-color: yellow;");
         ui->compressButton->setEnabled(true);
+        ui->analyzeButton->setStyleSheet("");
+        ui->analyzeButton->setDisabled(true);
+        ui->shockButton->setStyleSheet("");
+        ui->shockButton->setDisabled(true);
+    } else if (step == 6) {
+        ui->shockButton->setStyleSheet("background-color: yellow;");
+        ui->shockButton->setEnabled(true);
         ui->analyzeButton->setStyleSheet("");
         ui->analyzeButton->setDisabled(true);
     }

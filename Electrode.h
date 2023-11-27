@@ -2,6 +2,9 @@
 #define ELECTRODE_H
 using namespace std;
 
+#include <string>
+#include <iostream>
+
 class Electrode {
     public:
         Electrode();
