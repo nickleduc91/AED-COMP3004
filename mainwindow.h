@@ -33,6 +33,7 @@ private slots:
     void powerOn();
     void checkResponsiveness();
     void callForHelp();
+    void attach();
     void analyze();
     void compress();
 

@@ -16,8 +16,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->powerButton, SIGNAL(released()), this, SLOT(powerOn()));
     connect(ui->checkButton, SIGNAL(released()), this, SLOT(checkResponsiveness()));
     connect(ui->callButton, SIGNAL(released()), this, SLOT(callForHelp()));
-    connect(ui->attachButton, SIGNAL(released()), this, SLOT(analyze()));
-    connect(ui->dontTouchButton, SIGNAL(released()), this, SLOT(compress()));
+    connect(ui->attachButton, SIGNAL(released()), this, SLOT(attach()));
+    connect(ui->analyzeButton, SIGNAL(released()), this, SLOT(analyze()));
+
 
     //Set up the log info section on the GUI
     label = new QLabel(this);
@@ -47,7 +48,6 @@ MainWindow::~MainWindow()
 void MainWindow::powerOn() {
     if(!aed->isOn()) {
         //setting self test variables from ui
-        bool batteryCapacity = ui->bat_cap->isChecked();
         bool defibConnection = ui->defib_electro->isChecked();
         bool ecgCircuitry = ui->ecg_circuitry->isChecked();
         bool defibCharge = ui->defib_charge_discharge->isChecked();
@@ -55,12 +55,25 @@ void MainWindow::powerOn() {
         bool cprCircuitrySensor = ui->cpr_circuitry_sensor->isChecked();
         bool audioCircuitry = ui->audio_circuitry->isChecked();
 
+        //set victim weight and height
+        int victimAge = ui->ageBox->value();
+        int victimWeight = ui->weightBox->value();
+        aed->setVictim(victimAge, victimWeight);
+
+        //Disable height and weight spinners when aed turns on
+        ui->ageBox->setDisabled(true);
+        ui->weightBox->setDisabled(true);
+
         //calling self test and exiting function if test fails
-        if(!aed->performSelfTest(batteryCapacity,defibConnection,ecgCircuitry,defibCharge,microprocessorHardSoftware,cprCircuitrySensor,audioCircuitry)) {return;}
+        if(!aed->performSelfTest(defibConnection,ecgCircuitry,defibCharge,microprocessorHardSoftware,cprCircuitrySensor,audioCircuitry)) {return;}
         ui->aedFrame->setStyleSheet(nullptr);
         aed->handlePowerOn();
     } else {
         disableButtons();
+        //Enable height and weight spinners when aed turns off
+        ui->ageBox->setEnabled(true);
+        ui->weightBox->setEnabled(true);
+
         aed->handlePowerOff();
     }
 
@@ -74,16 +87,18 @@ void MainWindow::callForHelp() {
     aed->handleCallForHelp();
 }
 
-void MainWindow::analyze() {
+void MainWindow::attach() {
 
     bool isLeftChecked = ui->leftNipBox->isChecked();
     bool isRightChecked = ui->rightNipBox->isChecked();
     bool isbackBoxChecked = ui->backBox->isChecked();
     bool istearPadChecked = ui->tearPadBox->isChecked();
-    int victimAge = ui->ageBox->value();
-    int victimWeight = ui->weightBox->value();
 
-    aed->handleAnalyze(isLeftChecked, isRightChecked, isbackBoxChecked, istearPadChecked, victimAge, victimWeight);
+    aed->handleAttach(isLeftChecked, isRightChecked, isbackBoxChecked, istearPadChecked);
+}
+
+void MainWindow::analyze() {
+    aed->handleAnalyze();
 }
 
 void MainWindow::compress() {
@@ -125,15 +140,15 @@ void MainWindow::handleIlluminateGraphic(int step) {
         ui->callButton->setStyleSheet("");
         ui->callButton->setDisabled(true);
     } else if(step == 4) {
-        ui->dontTouchButton->setStyleSheet("background-color: yellow;");
-        ui->dontTouchButton->setEnabled(true);
+        ui->analyzeButton->setStyleSheet("background-color: yellow;");
+        ui->analyzeButton->setEnabled(true);
         ui->attachButton->setStyleSheet("");
         ui->attachButton->setDisabled(true);
     } else if(step == 5) {
         ui->compressButton->setStyleSheet("background-color: yellow;");
         ui->compressButton->setEnabled(true);
-        ui->dontTouchButton->setStyleSheet("");
-        ui->dontTouchButton->setDisabled(true);
+        ui->analyzeButton->setStyleSheet("");
+        ui->analyzeButton->setDisabled(true);
     }
 }
 
@@ -162,16 +177,18 @@ void MainWindow::disableButtons() {
     ui->checkButton->setDisabled(true);
     ui->callButton->setDisabled(true);
     ui->attachButton->setDisabled(true);
-    ui->dontTouchButton->setDisabled(true);
+    ui->analyzeButton->setDisabled(true);
     ui->compressButton->setDisabled(true);
     ui->breatheButton->setDisabled(true);
+    ui->shockButton->setDisabled(true);
 
     ui->checkButton->setStyleSheet("");
     ui->callButton->setStyleSheet("");
     ui->attachButton->setStyleSheet("");
-    ui->dontTouchButton->setStyleSheet("");
+    ui->analyzeButton->setStyleSheet("");
     ui->compressButton->setStyleSheet("");
     ui->breatheButton->setStyleSheet("");
+    ui->shockButton->setStyleSheet("");
 
     //self test panel reset
     ui->status_text->setText("SELF-TEST STATUS");
