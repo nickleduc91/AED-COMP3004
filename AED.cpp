@@ -14,6 +14,7 @@ AED::AED() {
     std::srand(std::time(0));
     // Generate a random number in the range from 0 to 3
     for(int i = 0; i < 100; i++) {
+        //Generate bit randomly to decide what steo we are on
         int randomNumber = std::rand() % 4;
         victimECG.push_back(randomNumber);
     }
