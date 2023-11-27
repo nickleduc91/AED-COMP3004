@@ -8,6 +8,7 @@
 #include <vector>
 #include <QTimer>
 #include <QObject>
+#include <cstdlib>
 
 using namespace std;
 
@@ -16,18 +17,21 @@ class AED : public QObject {
     public:
         AED(bool, bool, bool , bool, bool, bool, bool, int age, int weight, bool dry, bool hairy);
         AED();
-        bool performSelfTest(bool batteryCapacity,bool defibConnection,bool ecgCircuitry,bool defibCharge,bool microprocessor,bool cprCircuitrySensor,bool audioCircuitry);
+        bool performSelfTest(bool defibConnection,bool ecgCircuitry,bool defibCharge,bool microprocessor,bool cprCircuitrySensor,bool audioCircuitry);
         void handlePowerOn();
         void handleCheckResponsiveness();
         void handleCallForHelp();
-        void handleAnalyze(bool left, bool right, bool back, bool ripped, int age, int weight);
+        void handleAnalyze();
+        void handleAttach(bool left, bool right, bool back, bool ripped);
         void handleCompress();
         void handlePowerOff();
 
         void emitShock();
         void analyzeHeart();
-        bool checkPads(bool left, bool right, bool back, bool ripped, int age, int weight); // Check if the pads were attached properly
+        bool checkPads(bool left, bool right, bool back, bool ripped); // Check if the pads were attached properly
         void checkResponsiveness();
+
+        void setVictim(int age, int weight);
 
         bool isOn() { return isPoweredOn; }
 
@@ -55,8 +59,8 @@ class AED : public QObject {
         bool isChestDry;
         bool isChestHairy;
         bool isVictimOverWeight; //Break pads or not
-        vector<int> victimSteadyECG; //initialize with a sequence of steady waves using numbers
-        vector<int> victimArythmiaECG; //initialize with a sequence of bad waves using numbers
+        bool isVictimAdult;
+        vector<int> victimECG; //Contains a bit for every type of rhythm: Normal - 0, VFib - 1, VTach - 2, Flat line - 3
 
         //Display values
         int graphicStage;

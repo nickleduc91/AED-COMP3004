@@ -10,6 +10,16 @@ AED::AED() {
     batteryLevel = 100;
     totalTime = 0;
 
+    //Populate ECG data for victim
+    std::srand(std::time(0));
+    // Generate a random number in the range from 0 to 3
+    for(int i = 0; i < 100; i++) {
+        //Generate bit randomly to decide what steo we are on
+        int randomNumber = std::rand() % 4;
+        victimECG.push_back(randomNumber);
+    }
+
+
     //Slot to check if battery needs to be decremented after evry 10 seconds
     connect(display->getLCD()->getTimer(), SIGNAL(timeout()), this, SLOT(decrementBatteryLevel()));
 
@@ -46,23 +56,26 @@ void AED::handleCallForHelp() {
     display->getLCD()->setMessage("ATTACH DEFIB PADS TO PATIENT'S BARE CHEST");
 }
 
-void AED::handleAnalyze(bool left, bool right, bool back, bool ripped, int age, int weight) {
-
-    display->getGraphics()->illuminateGraphic(4);
+void AED::handleAnalyze() {
     display->getLCD()->setMessage("DON'T TOUCH PATIENT, ANALYZING");
-    QString victimStats = "VICTIM AGE = " + QString::number(age) + " VICTIM WEIGHT = " + QString::number(weight);
-    display->getLCD()->setMessage(victimStats.QString::toStdString());
-    QTimer::singleShot(5000, this, [=]() {
-        //If CPRS
-            //display->getGraphics()->illuminateGraphic(5);
-            //display->getLCD()->setMessage("START CPR");
-        //Else If SHOCK
-        if(checkPads(left, right, back, ripped, age, weight)){
-            //electrode->shock(10);
-        }
+//    QTimer::singleShot(5000, this, [=]() {
+//        //If CPR
+//            //display->getGraphics()->illuminateGraphic(5);
+//            //display->getLCD()->setMessage("START CPR");
+//        //Else If SHOCK
+//        if(checkPads(left, right, back, ripped, age, weight)){
+//            //electrode->shock(10);
+//        }
 
-    });
+//    });
 
+}
+
+void AED::handleAttach(bool left, bool right, bool back, bool ripped) {
+
+    if(checkPads(left, right, back, ripped)) {
+        display->getGraphics()->illuminateGraphic(4);
+    }
 }
 
 void AED::decrementBatteryLevel() {
@@ -80,7 +93,7 @@ void AED::handleCompress() {
 
 }
 
-bool AED::checkPads(bool left, bool right, bool back, bool ripped, int age, int weight){
+bool AED::checkPads(bool left, bool right, bool back, bool ripped){
 
     //Only use electrodes labeled “Infant/Child” on children less than 8 years old or weighing less than
     //55 lbs (25 kg). Use CPR-D-padz® if victim is older than 8 years or weighs more than 55 lbs (25 kg)
@@ -89,29 +102,29 @@ bool AED::checkPads(bool left, bool right, bool back, bool ripped, int age, int 
     //if child - bool right or bool left, and bool back
     //if overweight - book ripped, bool left, bool right
 
-    if(age < 8 || weight < 55){
+    if(!isVictimAdult){
         if((back && left && !right) || (back && right && !left)){
-            display->getLCD()->setMessage("CHILD ATTACHED SUCCESSFULLY");
+            display->getLCD()->setMessage("PEDIATRIC PADS");
             return true;
         }else{
-            display->getLCD()->setMessage("CHILD ATTACHED FAILED");
+            display->getLCD()->setMessage("CHECK ELECTRODE PADS");
             return false;
         }
     }else{
-        if(weight > 250){
+        if(isVictimOverWeight){
             if(ripped && right && left){
                 display->getLCD()->setMessage("FAT ASS ATTACHED SUCCESSFULLY");
                 return true;
             }else{
-                display->getLCD()->setMessage("FAT ASS ATTACHED FAILED");
+                display->getLCD()->setMessage("CHECK ELECTRODE PADS");
                 return false;
             }
         }else{
             if(left && right){
-                display->getLCD()->setMessage("ADULT ATTACHED SUCCESSFULLY");
+                display->getLCD()->setMessage("ADULT PADS");
                 return true;
             }else{
-                display->getLCD()->setMessage("ADULT ATTACHED FAILED");
+                display->getLCD()->setMessage("CHECK ELECTRODE PADS");
                 return false;
             }
         }
@@ -120,9 +133,9 @@ bool AED::checkPads(bool left, bool right, bool back, bool ripped, int age, int 
 
 }
 
-bool AED::performSelfTest(bool batteryCapacity,bool defibConnection,bool ecgCircuitry,bool defibCharge,bool microprocessor,bool cprCircuitrySensor,bool audioCircuitry) {
+bool AED::performSelfTest(bool defibConnection,bool ecgCircuitry,bool defibCharge,bool microprocessor,bool cprCircuitrySensor,bool audioCircuitry) {
     string statusMessage = "FAILED";
-    if(!batteryCapacity && !defibConnection && !ecgCircuitry && !defibCharge && !microprocessor && !cprCircuitrySensor && !audioCircuitry){
+    if(batteryLevel > 20 && !defibConnection && !ecgCircuitry && !defibCharge && !microprocessor && !cprCircuitrySensor && !audioCircuitry){
         isPassedTest = true;
         statusMessage = "PASSED";
     }else {
@@ -130,4 +143,19 @@ bool AED::performSelfTest(bool batteryCapacity,bool defibConnection,bool ecgCirc
     }
     emit callHandleStatusUpdate(statusMessage,isPassedTest);
     return isPassedTest;
+}
+
+void AED::setVictim(int age, int weight) {
+    victimAge = age;
+    victimWeight = weight;
+    if(age < 8 || weight < 55){
+        isVictimAdult = false;
+    }else{
+        isVictimAdult = true;
+        if(weight > 250){
+            isVictimOverWeight = true;
+        }else{
+            isVictimOverWeight = false;
+        }
+    }
 }
