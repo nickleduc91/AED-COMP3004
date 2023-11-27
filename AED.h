@@ -25,6 +25,7 @@ class AED : public QObject {
         void handleAttach(bool left, bool right, bool back, bool ripped);
         void handleCompress();
         void handlePowerOff();
+        void handleShock();
 
         void emitShock();
         void analyzeHeart();
@@ -32,8 +33,10 @@ class AED : public QObject {
         void checkResponsiveness();
 
         void setVictim(int age, int weight);
+        void setDelayedMessage(const string message, int delay);
 
         bool isOn() { return isPoweredOn; }
+        bool isArythmia() { return ( victimECG.at(ecgIndex) == 1 ||  victimECG.at(ecgIndex) == 2 ); }
 
         ControlPanel* cp;
         Display* display;
@@ -61,6 +64,8 @@ class AED : public QObject {
         bool isVictimOverWeight; //Break pads or not
         bool isVictimAdult;
         vector<int> victimECG; //Contains a bit for every type of rhythm: Normal - 0, VFib - 1, VTach - 2, Flat line - 3
+        int ecgIndex;
+        int voltage;
 
         //Display values
         int graphicStage;

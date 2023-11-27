@@ -9,12 +9,13 @@ AED::AED() {
     isPoweredOn = false;
     batteryLevel = 100;
     totalTime = 0;
+    voltage = 10;
 
     //Populate ECG data for victim
+    ecgIndex = 0;
     std::srand(std::time(0));
-    // Generate a random number in the range from 0 to 3
     for(int i = 0; i < 100; i++) {
-        //Generate bit randomly to decide what steo we are on
+        //Generate bit randomly to decide what ecg value we are on
         int randomNumber = std::rand() % 4;
         victimECG.push_back(randomNumber);
     }
@@ -58,17 +59,37 @@ void AED::handleCallForHelp() {
 
 void AED::handleAnalyze() {
     display->getLCD()->setMessage("DON'T TOUCH PATIENT, ANALYZING");
-//    QTimer::singleShot(5000, this, [=]() {
-//        //If CPR
-//            //display->getGraphics()->illuminateGraphic(5);
-//            //display->getLCD()->setMessage("START CPR");
-//        //Else If SHOCK
-//        if(checkPads(left, right, back, ripped, age, weight)){
-//            //electrode->shock(10);
-//        }
+    QTimer::singleShot(1500, this, [=]() {
+        if(isArythmia()) {
+            //Enable the shock button
+            display->getLCD()->setMessage("SHOCK ADVISED");
+            display->getGraphics()->illuminateGraphic(6);
+        } else {
+            //Perform CPR if shock is not issued
+            display->getLCD()->setMessage("NO SHOCK ADVISED");
+            display->getGraphics()->illuminateGraphic(5);
+            setDelayedMessage("START CPR", 1500);
+        }
 
-//    });
+    });
+    ecgIndex++;
 
+}
+
+void AED::handleShock() {
+    display->getLCD()->setMessage("SHOCK WILL BE DELIVERED IN 3, 2, 1");
+    electrode->shock(voltage);
+    setDelayedMessage("SHOCK DELIVERED", 1500);
+    //Start CPR after shock is issued
+    display->getGraphics()->illuminateGraphic(5);
+    setDelayedMessage("START CPR", 1500);
+
+}
+
+void AED::setDelayedMessage(const string message, int delay) {
+    QTimer::singleShot(delay, this, [=]() {
+        display->getLCD()->setMessage(message);
+    });
 }
 
 void AED::handleAttach(bool left, bool right, bool back, bool ripped) {
@@ -150,8 +171,10 @@ void AED::setVictim(int age, int weight) {
     victimWeight = weight;
     if(age < 8 || weight < 55){
         isVictimAdult = false;
+        voltage = 5; //Adjust voltage to child
     }else{
         isVictimAdult = true;
+        voltage = 10; //Adjust voltage to adult
         if(weight > 250){
             isVictimOverWeight = true;
         }else{

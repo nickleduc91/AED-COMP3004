@@ -36,6 +36,7 @@ private slots:
     void attach();
     void analyze();
     void compress();
+    void shock();
 
 public slots:
     void handleIlluminateGraphic(int step);
