@@ -21,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->shockButton, SIGNAL(released()), this, SLOT(shock()));
     connect(ui->changeBatteries, SIGNAL(released()), this, SLOT(changeBatteries()));
 
+    connect(ui->ageBox, SIGNAL(valueChanged(int)), this, SLOT(onSpinBoxAgeChanged(int)));
+
 
     //Set up the log info section on the GUI
     label = new QLabel(this);
@@ -43,11 +45,22 @@ MainWindow::MainWindow(QWidget *parent)
     connect(aed, &AED::callHandleStatusUpdate, this, &MainWindow::handleStatusUpdate);
     connect(aed, SIGNAL(updateBatteryLevel(int)), this, SLOT(updateBatteryLevel(int)));
     connect(aed, SIGNAL(deadBattery()), this, SLOT(deadAED()));
+    ui->hairyChestBox->setDisabled(true);
+
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::onSpinBoxAgeChanged(int age) {
+    if(age <= 8) {
+        ui->hairyChestBox->setDisabled(true);
+    } else {
+        ui->hairyChestBox->setEnabled(true);
+    }
 }
 
 void MainWindow::powerOn() {
@@ -63,11 +76,19 @@ void MainWindow::powerOn() {
         //set victim weight and height
         int victimAge = ui->ageBox->value();
         int victimWeight = ui->weightBox->value();
-        aed->setVictim(victimAge, victimWeight);
+        bool isWet = ui->wetChestBox->isChecked();
+        bool isHairy = ui->hairyChestBox->isChecked();
+
+        aed->setVictim(victimAge, victimWeight, isHairy, isWet);
+
+        //Disable clipper based on age
+        aed->isAdult() ? ui->useClipperBox->setDisabled(false) : ui->useClipperBox->setDisabled(true);
 
         //Disable height and weight spinners when aed turns on
         ui->ageBox->setDisabled(true);
         ui->weightBox->setDisabled(true);
+        ui->wetChestBox->setDisabled(true);
+        ui->hairyChestBox->setDisabled(true);
 
         //calling self test and exiting function if test fails
         if(!aed->performSelfTest(defibConnection,ecgCircuitry,defibCharge,microprocessorHardSoftware,cprCircuitrySensor,audioCircuitry)) {return;}
@@ -78,6 +99,8 @@ void MainWindow::powerOn() {
         //Enable height and weight spinners when aed turns off
         ui->ageBox->setEnabled(true);
         ui->weightBox->setEnabled(true);
+        ui->wetChestBox->setEnabled(true);
+        ui->hairyChestBox->setEnabled(true);
         ui->status_text->setStyleSheet("background-color: white; border:");
 
         aed->handlePowerOff();
@@ -116,8 +139,10 @@ void MainWindow::attach() {
     bool isRightChecked = ui->rightNipBox->isChecked();
     bool isbackBoxChecked = ui->backBox->isChecked();
     bool istearPadChecked = ui->tearPadBox->isChecked();
+    bool towel = ui->useTowelBox->isChecked();
+    bool clip = ui->useClipperBox->isChecked();
 
-    aed->handleAttach(isLeftChecked, isRightChecked, isbackBoxChecked, istearPadChecked);
+    aed->handleAttach(isLeftChecked, isRightChecked, isbackBoxChecked, istearPadChecked, towel, clip);
 }
 
 void MainWindow::analyze() {

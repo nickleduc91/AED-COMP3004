@@ -101,9 +101,9 @@ void AED::setDelayedMessage(const string message, int delay) {
     });
 }
 
-void AED::handleAttach(bool left, bool right, bool back, bool ripped) {
+void AED::handleAttach(bool left, bool right, bool back, bool ripped, bool towel, bool clip) {
 
-    if(checkPads(left, right, back, ripped)) {
+    if(checkPads(left, right, back, ripped, towel, clip)) {
         display->getGraphics()->illuminateGraphic(4);
     }
 }
@@ -130,7 +130,7 @@ void AED::handleBreathe() {
     ecgIndex++; //Increment the index so we can get the next rhythm before analyzing
 }
 
-bool AED::checkPads(bool left, bool right, bool back, bool ripped){
+bool AED::checkPads(bool left, bool right, bool back, bool ripped, bool towel, bool clip){
 
     //Only use electrodes labeled “Infant/Child” on children less than 8 years old or weighing less than
     //55 lbs (25 kg). Use CPR-D-padz® if victim is older than 8 years or weighs more than 55 lbs (25 kg)
@@ -140,7 +140,7 @@ bool AED::checkPads(bool left, bool right, bool back, bool ripped){
     //if overweight - book ripped, bool left, bool right
 
     if(!isVictimAdult){
-        if((back && left && !right) || (back && right && !left)){
+        if(((back && left && !right) || (back && right && !left)) && ( (isVictimWet && towel) || !isVictimWet) && ( (isVictimHairy && clip) || !isVictimHairy) ){
             display->getLCD()->setMessage("PEDIATRIC PADS");
             return true;
         }else{
@@ -149,7 +149,7 @@ bool AED::checkPads(bool left, bool right, bool back, bool ripped){
         }
     }else{
         if(isVictimOverWeight){
-            if(ripped && right && left){
+            if(ripped && right && left && ( (isVictimWet && towel) || !isVictimWet) && ( (isVictimHairy && clip) || !isVictimHairy)){
                 display->getLCD()->setMessage("FAT ASS ATTACHED SUCCESSFULLY");
                 return true;
             }else{
@@ -157,7 +157,7 @@ bool AED::checkPads(bool left, bool right, bool back, bool ripped){
                 return false;
             }
         }else{
-            if(left && right){
+            if(left && right && ( (isVictimWet && towel) || !isVictimWet) && ( (isVictimHairy && clip) || !isVictimHairy)){
                 display->getLCD()->setMessage("ADULT PADS");
                 return true;
             }else{
@@ -182,10 +182,12 @@ bool AED::performSelfTest(bool defibConnection,bool ecgCircuitry,bool defibCharg
     return isPassedTest;
 }
 
-void AED::setVictim(int age, int weight) {
+void AED::setVictim(int age, int weight, bool isHairy, bool isWet) {
     victimAge = age;
     victimWeight = weight;
-    if(age < 8 || weight < 55){
+    isVictimHairy = isHairy;
+    isVictimWet = isWet;
+    if(age < 8){
         isVictimAdult = false;
         voltage = 5; //Adjust voltage to child
     }else{
