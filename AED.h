@@ -24,6 +24,7 @@ class AED : public QObject {
         void handleAnalyze();
         void handleAttach(bool left, bool right, bool back, bool ripped);
         void handleCompress();
+        void handleBreathe();
         void handlePowerOff();
         void handleShock();
         void handleNewBatteries();

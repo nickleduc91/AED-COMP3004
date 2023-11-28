@@ -80,7 +80,6 @@ void AED::handleAnalyze() {
         }
 
     });
-    ecgIndex++;
 
 }
 
@@ -125,6 +124,10 @@ void AED::decrementBatteryLevel() {
 
 void AED::handleCompress() {
 
+}
+
+void AED::handleBreathe() {
+    ecgIndex++; //Increment the index so we can get the next rhythm before analyzing
 }
 
 bool AED::checkPads(bool left, bool right, bool back, bool ripped){
