@@ -258,19 +258,6 @@ border-radius:35px;
      <string>Call For Help</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="attachButton">
-    <property name="geometry">
-     <rect>
-      <x>700</x>
-      <y>230</y>
-      <width>83</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Attach</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
@@ -714,6 +701,45 @@ color: rgb(255, 255, 255);</string>
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
+    <widget class="QCheckBox" name="useTowelBox">
+     <property name="geometry">
+      <rect>
+       <x>700</x>
+       <y>250</y>
+       <width>101</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Use Towel</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="attachButton">
+     <property name="geometry">
+      <rect>
+       <x>710</x>
+       <y>220</y>
+       <width>83</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Attach</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="useClipperBox">
+     <property name="geometry">
+      <rect>
+       <x>700</x>
+       <y>270</y>
+       <width>101</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Use Clipper</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QLCDNumber" name="battery_lcd">
     <property name="geometry">
@@ -740,7 +766,7 @@ border-radius: 7px;</string>
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>600</y>
+      <y>597</y>
       <width>161</width>
       <height>26</height>
      </rect>
@@ -760,6 +786,32 @@ border-radius: 7px;</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
+   <widget class="QCheckBox" name="hairyChestBox">
+    <property name="geometry">
+     <rect>
+      <x>821</x>
+      <y>340</y>
+      <width>131</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Has hairy chest</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="wetChestBox">
+    <property name="geometry">
+     <rect>
+      <x>962</x>
+      <y>340</y>
+      <width>131</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Has a wet chest</string>
+    </property>
+   </widget>
    <zorder>aedFrame</zorder>
    <zorder>powerButton</zorder>
    <zorder>label</zorder>
@@ -772,7 +824,6 @@ border-radius: 7px;</string>
    <zorder>checkButton</zorder>
    <zorder>callButton</zorder>
    <zorder>label_6</zorder>
-   <zorder>attachButton</zorder>
    <zorder>label_7</zorder>
    <zorder>label_8</zorder>
    <zorder>analyzeButton</zorder>
@@ -797,6 +848,8 @@ border-radius: 7px;</string>
    <zorder>radioButton_6</zorder>
    <zorder>battery_lcd</zorder>
    <zorder>status_text</zorder>
+   <zorder>hairyChestBox</zorder>
+   <zorder>wetChestBox</zorder>
   </widget>
  </widget>
  <resources/>

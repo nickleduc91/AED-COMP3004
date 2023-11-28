@@ -40,6 +40,7 @@ private slots:
     void updateBatteryLevel(int);
     void deadAED();
     void changeBatteries();
+    void onSpinBoxAgeChanged(int);
 
 public slots:
     void handleIlluminateGraphic(int step);

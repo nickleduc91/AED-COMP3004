@@ -22,7 +22,7 @@ class AED : public QObject {
         void handleCheckResponsiveness();
         void handleCallForHelp();
         void handleAnalyze();
-        void handleAttach(bool left, bool right, bool back, bool ripped);
+        void handleAttach(bool left, bool right, bool back, bool ripped, bool towel, bool clip);
         void handleCompress();
         void handleBreathe();
         void handlePowerOff();
@@ -30,10 +30,10 @@ class AED : public QObject {
         void handleNewBatteries();
 
         void analyzeHeart();
-        bool checkPads(bool left, bool right, bool back, bool ripped); // Check if the pads were attached properly
+        bool checkPads(bool left, bool right, bool back, bool ripped, bool towel, bool clip); // Check if the pads were attached properly
         void checkResponsiveness();
 
-        void setVictim(int age, int weight);
+        void setVictim(int age, int weight, bool isHairy, bool isWet);
         void setDelayedMessage(const string message, int delay);
 
         void setIsPoweredOn(bool val) { isPoweredOn = val; }
@@ -42,6 +42,8 @@ class AED : public QObject {
 
         void setBatteryLevel(int val) { batteryLevel = val; }
         void resetTotalTime() { totalTime = 0; }
+
+        bool isAdult() { return isVictimAdult; }
 
         ControlPanel* cp;
         Display* display;
@@ -64,8 +66,8 @@ class AED : public QObject {
         //Victim values
         int victimAge; //0-8 = child, 9 >= adult
         int victimWeight;
-        bool isChestDry;
-        bool isChestHairy;
+        bool isVictimWet;
+        bool isVictimHairy;
         bool isVictimOverWeight; //Break pads or not
         bool isVictimAdult;
         vector<int> victimECG; //Contains a bit for every type of rhythm: Normal - 0, VFib - 1, VTach - 2, Flat line - 3
