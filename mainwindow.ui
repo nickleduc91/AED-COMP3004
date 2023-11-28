@@ -478,7 +478,7 @@ border-color: rgb(0, 0, 0);</string>
       <string>Elapsed time</string>
      </property>
     </widget>
-    <widget class="QLCDNumber" name="lcdNumber">
+    <widget class="QLCDNumber" name="shockCount">
      <property name="geometry">
       <rect>
        <x>78</x>

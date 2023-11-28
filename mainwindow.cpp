@@ -188,6 +188,8 @@ void MainWindow::handleIlluminateGraphic(int step) {
 void MainWindow::handleLogToDisplay(string message, string type) {
     if(type == "time") {
         ui->elapsedTimeLabel->setText(QString::fromStdString(message));
+    } else if(type == "shock") {
+        ui->shockCount->display(QString::fromStdString(message));
     } else {
         logInfo(message);
     }

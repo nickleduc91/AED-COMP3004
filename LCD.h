@@ -16,6 +16,7 @@ class LCD : public QObject {
         void setMessage(string message);
         QTimer* getTimer() { return timer; }
         void resetElapsedTime();
+        void updateShockCount(int shockCount);
 
     private slots:
         void updateElapsedTime();

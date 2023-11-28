@@ -10,6 +10,7 @@ AED::AED() {
     batteryLevel = 100;
     totalTime = 0;
     voltage = 10;
+    shockCount = 0;
 
     //Populate ECG data for victim
     ecgIndex = 0;
@@ -86,6 +87,8 @@ void AED::handleAnalyze() {
 void AED::handleShock() {
     display->getLCD()->setMessage("SHOCK WILL BE DELIVERED IN 3, 2, 1");
     electrode->shock(voltage);
+    shockCount++;
+    display->getLCD()->updateShockCount(shockCount);
     setDelayedMessage("SHOCK DELIVERED", 1500);
     //Start CPR after shock is issued
     display->getGraphics()->illuminateGraphic(5);
@@ -166,7 +169,7 @@ bool AED::checkPads(bool left, bool right, bool back, bool ripped){
 
 bool AED::performSelfTest(bool defibConnection,bool ecgCircuitry,bool defibCharge,bool microprocessor,bool cprCircuitrySensor,bool audioCircuitry) {
     string statusMessage = "FAILED";
-    if(batteryLevel > 20 && !defibConnection && !ecgCircuitry && !defibCharge && !microprocessor && !cprCircuitrySensor && !audioCircuitry){
+    if(batteryLevel > 10 && !defibConnection && !ecgCircuitry && !defibCharge && !microprocessor && !cprCircuitrySensor && !audioCircuitry){
         isPassedTest = true;
         statusMessage = "PASSED";
     }else {

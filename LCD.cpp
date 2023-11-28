@@ -24,3 +24,7 @@ void LCD::updateElapsedTime() {
     // Emit the signal with the formatted elapsed time
     emit callHandlelogToDisplay(elapsedTime.toString("mm:ss").toStdString(), "time"); // Format as "XX:XX"
 }
+
+void LCD::updateShockCount(int shockCount) {
+    emit callHandlelogToDisplay(to_string(shockCount), "shock");
+}
