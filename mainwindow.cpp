@@ -45,8 +45,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(aed, &AED::callHandleStatusUpdate, this, &MainWindow::handleStatusUpdate);
     connect(aed, SIGNAL(updateBatteryLevel(int)), this, SLOT(updateBatteryLevel(int)));
     connect(aed, SIGNAL(deadBattery()), this, SLOT(deadAED()));
-    ui->hairyChestBox->setDisabled(true);
-
 
 }
 
@@ -58,6 +56,7 @@ MainWindow::~MainWindow()
 void MainWindow::onSpinBoxAgeChanged(int age) {
     if(age <= 8) {
         ui->hairyChestBox->setDisabled(true);
+        ui->hairyChestBox->setChecked(false);
     } else {
         ui->hairyChestBox->setEnabled(true);
     }
@@ -82,7 +81,8 @@ void MainWindow::powerOn() {
         aed->setVictim(victimAge, victimWeight, isHairy, isWet);
 
         //Disable clipper based on age
-        aed->isAdult() ? ui->useClipperBox->setDisabled(false) : ui->useClipperBox->setDisabled(true);
+        isHairy ? ui->useClipperBox->setDisabled(false) : ui->useClipperBox->setDisabled(true);
+        isWet ? ui->useTowelBox->setDisabled(false) : ui->useTowelBox->setDisabled(true);
 
         //Disable height and weight spinners when aed turns on
         ui->ageBox->setDisabled(true);
@@ -100,7 +100,6 @@ void MainWindow::powerOn() {
         ui->ageBox->setEnabled(true);
         ui->weightBox->setEnabled(true);
         ui->wetChestBox->setEnabled(true);
-        ui->hairyChestBox->setEnabled(true);
         ui->status_text->setStyleSheet("background-color: white; border:");
 
         aed->handlePowerOff();
@@ -259,6 +258,10 @@ void MainWindow::disableButtons() {
     ui->compressButton->setStyleSheet("");
     ui->breatheButton->setStyleSheet("");
     ui->shockButton->setStyleSheet("");
+
+    ui->useTowelBox->setChecked(false);
+    ui->useClipperBox->setChecked(false);
+    ui->hairyChestBox->setDisabled(true);
 
     //self test panel reset
     ui->status_text->setText("SELF-TEST STATUS");

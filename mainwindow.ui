@@ -731,7 +731,7 @@ color: rgb(255, 255, 255);</string>
      <property name="geometry">
       <rect>
        <x>700</x>
-       <y>270</y>
+       <y>276</y>
        <width>101</width>
        <height>23</height>
       </rect>
