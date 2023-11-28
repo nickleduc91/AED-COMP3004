@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget *scrollContent = new QWidget;
     scrollContent->setLayout(logWindow);
     ui->consoleScrollArea->setWidget(scrollContent);
+    ui->status_text->setStyleSheet("background-color: white; border:");
 
     AED* aedDevice = new AED();
     aed = aedDevice;
@@ -77,6 +78,7 @@ void MainWindow::powerOn() {
         //Enable height and weight spinners when aed turns off
         ui->ageBox->setEnabled(true);
         ui->weightBox->setEnabled(true);
+        ui->status_text->setStyleSheet("background-color: white; border:");
 
         aed->handlePowerOff();
     }
@@ -195,10 +197,10 @@ void MainWindow::handleLogToDisplay(string message, string type) {
 void MainWindow::handleStatusUpdate(string message,bool status) {
     ui->status_text->setText(QString::fromStdString(message));
     if(status){
-        ui->status_text->setStyleSheet("color: green;border: 1px solid green;");
+        ui->status_text->setStyleSheet("color: green;border: 1px solid green; background-color: white;");
         ui->test_control_panel->setEnabled(false);
     }else{
-        ui->status_text->setStyleSheet("color: red;border: 1px solid red;");
+        ui->status_text->setStyleSheet("color: red;border: 1px solid red; background-color: white;");
     }
 }
 
