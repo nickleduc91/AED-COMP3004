@@ -37,6 +37,9 @@ private slots:
     void analyze();
     void compress();
     void shock();
+    void updateBatteryLevel(int);
+    void deadAED();
+    void changeBatteries();
 
 public slots:
     void handleIlluminateGraphic(int step);
