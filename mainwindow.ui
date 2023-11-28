@@ -734,6 +734,27 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;SELF-TEST STATUS&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
+   <widget class="QLCDNumber" name="battery_lcd">
+    <property name="geometry">
+     <rect>
+      <x>1010</x>
+      <y>600</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(46, 194, 126);
+color: rgb(255, 255, 255);
+border-radius: 7px;</string>
+    </property>
+    <property name="intValue" stdset="0">
+     <number>100</number>
+    </property>
+   </widget>
    <zorder>aedFrame</zorder>
    <zorder>powerButton</zorder>
    <zorder>label</zorder>
@@ -770,6 +791,7 @@ p, li { white-space: pre-wrap; }
    <zorder>radioButton_5</zorder>
    <zorder>radioButton_6</zorder>
    <zorder>status_text</zorder>
+   <zorder>battery_lcd</zorder>
   </widget>
  </widget>
  <resources/>

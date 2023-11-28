@@ -47,6 +47,13 @@ void AED::handlePowerOff() {
 
 }
 
+void AED::handleNewBatteries() {
+    display->getLCD()->getTimer()->stop();
+    display->getLCD()->resetElapsedTime();
+    resetTotalTime();
+    display->getLCD()->setMessage("");
+}
+
 void AED::handleCheckResponsiveness() {
     display->getGraphics()->illuminateGraphic(2);
     display->getLCD()->setMessage("CALL FOR HELP");
@@ -104,8 +111,11 @@ void AED::decrementBatteryLevel() {
         totalTime++;
         if (totalTime % 10 == 0) { // Decrement battery every 10 seconds
             batteryLevel = qMax(0, batteryLevel - 1); // Ensure the batteryLevel doesn't go below 0
-            cout << to_string(batteryLevel) << endl;
-            // Update UI
+            if (batteryLevel == 0){
+                emit deadBattery();
+            } else {
+                emit updateBatteryLevel(batteryLevel);
+            }
         }
     }
 }

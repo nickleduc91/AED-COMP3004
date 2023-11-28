@@ -26,6 +26,7 @@ class AED : public QObject {
         void handleCompress();
         void handlePowerOff();
         void handleShock();
+        void handleNewBatteries();
 
         void emitShock();
         void analyzeHeart();
@@ -35,8 +36,12 @@ class AED : public QObject {
         void setVictim(int age, int weight);
         void setDelayedMessage(const string message, int delay);
 
+        void setIsPoweredOn(bool val) { isPoweredOn = val; }
         bool isOn() { return isPoweredOn; }
         bool isArythmia() { return ( victimECG.at(ecgIndex) == 1 ||  victimECG.at(ecgIndex) == 2 ); }
+
+        void setBatteryLevel(int val) { batteryLevel = val; }
+        void resetTotalTime() { totalTime = 0; }
 
         ControlPanel* cp;
         Display* display;
@@ -79,6 +84,8 @@ class AED : public QObject {
 
     signals:
         void callHandleStatusUpdate(string message,bool status);
+        void updateBatteryLevel(int);
+        void deadBattery();
 
 
 };

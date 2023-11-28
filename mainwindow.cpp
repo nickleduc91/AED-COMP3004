@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->attachButton, SIGNAL(released()), this, SLOT(attach()));
     connect(ui->analyzeButton, SIGNAL(released()), this, SLOT(analyze()));
     connect(ui->shockButton, SIGNAL(released()), this, SLOT(shock()));
+    connect(ui->changeBatteries, SIGNAL(released()), this, SLOT(changeBatteries()));
 
 
     //Set up the log info section on the GUI
@@ -39,6 +40,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(aed->display->getGraphics(), &Graphics::callHandleIlluminateGraphic, this, &MainWindow::handleIlluminateGraphic);
     connect(aed->display->getLCD(), &LCD::callHandlelogToDisplay, this, &MainWindow::handleLogToDisplay);
     connect(aed, &AED::callHandleStatusUpdate, this, &MainWindow::handleStatusUpdate);
+    connect(aed, SIGNAL(updateBatteryLevel(int)), this, SLOT(updateBatteryLevel(int)));
+    connect(aed, SIGNAL(deadBattery()), this, SLOT(deadAED()));
 }
 
 MainWindow::~MainWindow()
@@ -78,6 +81,23 @@ void MainWindow::powerOn() {
         aed->handlePowerOff();
     }
 
+}
+
+void MainWindow::deadAED(){
+    ui->battery_lcd->display(0);
+    ui->battery_lcd->setStyleSheet("background-color: black; color: white; border-radius: 7px;");
+    ui->changeBatteries->setStyleSheet("background-color: yellow;");
+    aed->setIsPoweredOn(true);
+    powerOn();
+}
+
+void MainWindow::updateBatteryLevel(int batteryLevel) {
+    ui->battery_lcd->display(batteryLevel);
+    if (batteryLevel <= 20 && batteryLevel > 10){
+        ui->battery_lcd->setStyleSheet("background-color: yellow; border-radius: 7px;");
+    } else if (batteryLevel <= 10) {
+        ui->battery_lcd->setStyleSheet("background-color: red; color: white; border-radius: 7px;");
+    }
 }
 
 void MainWindow::checkResponsiveness() {
@@ -180,6 +200,16 @@ void MainWindow::handleStatusUpdate(string message,bool status) {
     }else{
         ui->status_text->setStyleSheet("color: red;border: 1px solid red;");
     }
+}
+
+void MainWindow::changeBatteries() {
+    aed->setBatteryLevel(100);
+    ui->battery_lcd->display(100);
+    ui->battery_lcd->setStyleSheet("background-color: rgb(46, 194, 126); color: rgb(255, 255, 255); border-radius: 7px;");
+    ui->changeBatteries->setStyleSheet(""); //clears the styleSheet and sets the background to normal
+    aed->handleNewBatteries();
+    aed->setIsPoweredOn(true);
+    powerOn();
 }
 
 void MainWindow::disableButtons() {
