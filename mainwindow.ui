@@ -608,84 +608,6 @@ color: rgb(255, 255, 255);</string>
      <string>Victim age (years)</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButton">
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>450</y>
-      <width>106</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>0.5 inches</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton_2">
-    <property name="geometry">
-     <rect>
-      <x>380</x>
-      <y>450</y>
-      <width>106</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>1 inch</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton_3">
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>470</y>
-      <width>106</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>1.5 inches</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton_4">
-    <property name="geometry">
-     <rect>
-      <x>380</x>
-      <y>470</y>
-      <width>106</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>2 inches</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton_5">
-    <property name="geometry">
-     <rect>
-      <x>280</x>
-      <y>490</y>
-      <width>106</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>3 inches</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton_6">
-    <property name="geometry">
-     <rect>
-      <x>380</x>
-      <y>490</y>
-      <width>106</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>3.5 inches</string>
-    </property>
-   </widget>
    <widget class="QFrame" name="aedFrame">
     <property name="geometry">
      <rect>
@@ -738,6 +660,74 @@ color: rgb(255, 255, 255);</string>
      </property>
      <property name="text">
       <string>Use Clipper</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="oneAndHalfInches">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>490</y>
+       <width>106</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>1.5 inches</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="oneInch">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>470</y>
+       <width>91</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>1 inch</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="twoInches">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>450</y>
+       <width>106</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>2 inches</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="twoAndHalfInches">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>470</y>
+       <width>106</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>2.5 inches</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="halfInches">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>450</y>
+       <width>106</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0.5 inches</string>
      </property>
     </widget>
    </widget>
@@ -840,12 +830,6 @@ border-radius: 7px;</string>
    <zorder>label_3</zorder>
    <zorder>ageBox</zorder>
    <zorder>label_14</zorder>
-   <zorder>radioButton</zorder>
-   <zorder>radioButton_2</zorder>
-   <zorder>radioButton_3</zorder>
-   <zorder>radioButton_4</zorder>
-   <zorder>radioButton_5</zorder>
-   <zorder>radioButton_6</zorder>
    <zorder>battery_lcd</zorder>
    <zorder>status_text</zorder>
    <zorder>hairyChestBox</zorder>

@@ -20,8 +20,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->analyzeButton, SIGNAL(released()), this, SLOT(analyze()));
     connect(ui->shockButton, SIGNAL(released()), this, SLOT(shock()));
     connect(ui->changeBatteries, SIGNAL(released()), this, SLOT(changeBatteries()));
-
+    connect(ui->compressButton, SIGNAL(released()), this, SLOT(compress()));
     connect(ui->ageBox, SIGNAL(valueChanged(int)), this, SLOT(onSpinBoxAgeChanged(int)));
+    connect(ui->breatheButton, SIGNAL(released()), this, SLOT(breaths()));
 
 
     //Set up the log info section on the GUI
@@ -45,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(aed, &AED::callHandleStatusUpdate, this, &MainWindow::handleStatusUpdate);
     connect(aed, SIGNAL(updateBatteryLevel(int)), this, SLOT(updateBatteryLevel(int)));
     connect(aed, SIGNAL(deadBattery()), this, SLOT(deadAED()));
-
+    connect(aed, SIGNAL(pushHarder()), this, SLOT(needHarderCompressions()));
 }
 
 MainWindow::~MainWindow()
@@ -153,7 +154,25 @@ void MainWindow::shock() {
 }
 
 void MainWindow::compress() {
+    ui->compressButton->setStyleSheet("");
+    ui->compressButton->setEnabled(false);
 
+    if ((aed->isAdult() && (ui->twoInches->isChecked() || ui->twoAndHalfInches->isChecked())) || (!aed->isAdult() && (ui->oneAndHalfInches->isChecked() || ui->twoInches->isChecked() || ui->twoAndHalfInches->isChecked()))){
+       aed->handleCompress(true);
+    } else if ((!aed->isAdult() && (ui->oneInch->isChecked() || ui->halfInches->isChecked())) || (aed->isAdult() && (ui->oneAndHalfInches->isChecked() || ui->oneInch->isChecked() || ui->halfInches->isChecked()))){
+       aed->handleCompress(false);
+    }
+}
+
+void MainWindow::breaths() {
+    ui->breatheButton->setStyleSheet("");
+    ui->breatheButton->setEnabled(false);
+    aed->handleBreathe();
+}
+
+void MainWindow::needHarderCompressions() {
+    ui->compressButton->setEnabled(true);
+    ui->compressButton->setStyleSheet("background-color: yellow;");
 }
 
 void MainWindow::logInfo(const string message) {
@@ -197,6 +216,7 @@ void MainWindow::handleIlluminateGraphic(int step) {
     } else if(step == 5) {
         ui->compressButton->setStyleSheet("background-color: yellow;");
         ui->compressButton->setEnabled(true);
+        ui->twoInches->setChecked(true);
         ui->analyzeButton->setStyleSheet("");
         ui->analyzeButton->setDisabled(true);
         ui->shockButton->setStyleSheet("");
@@ -206,6 +226,9 @@ void MainWindow::handleIlluminateGraphic(int step) {
         ui->shockButton->setEnabled(true);
         ui->analyzeButton->setStyleSheet("");
         ui->analyzeButton->setDisabled(true);
+    } else if (step == 7) {
+        ui->breatheButton->setEnabled(true);
+        ui->breatheButton->setStyleSheet("background-color: yellow;");
     }
 }
 
@@ -227,6 +250,7 @@ void MainWindow::handleStatusUpdate(string message,bool status) {
         ui->test_control_panel->setEnabled(false);
     }else{
         ui->status_text->setStyleSheet("color: red;border: 1px solid red; background-color: white;");
+        aed->failedSelfTest();
     }
 }
 
