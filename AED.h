@@ -38,7 +38,7 @@ class AED : public QObject {
 
         void setIsPoweredOn(bool val) { isPoweredOn = val; }
         bool isOn() { return isPoweredOn; }
-        bool isArythmia() { return ( victimECG.at(ecgIndex) == 1 ||  victimECG.at(ecgIndex) == 2 ); }
+        int getRhythm() { return (victimECG.at(ecgIndex)); }
 
         void setBatteryLevel(int val) { batteryLevel = val; }
         void resetTotalTime() { totalTime = 0; }
@@ -88,7 +88,9 @@ class AED : public QObject {
         void callHandleStatusUpdate(string message,bool status);
         void updateBatteryLevel(int);
         void deadBattery();
-
-
+        void vfib_graph_signal();
+        void vtac_graph_signal();
+        void normal_graph_signal();
+        void flatline_graph_signal();
 };
 #endif // AED_H
