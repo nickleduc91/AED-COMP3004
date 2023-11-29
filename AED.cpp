@@ -150,7 +150,7 @@ bool AED::checkPads(bool left, bool right, bool back, bool ripped, bool towel, b
     }else{
         if(isVictimOverWeight){
             if(ripped && right && left && ( (isVictimWet && towel) || !isVictimWet) && ( (isVictimHairy && clip) || !isVictimHairy)){
-                display->getLCD()->setMessage("FAT ASS ATTACHED SUCCESSFULLY");
+                display->getLCD()->setMessage("FAT ASS ATTACHED SUCCESSFULLY. EAT A SALAD");
                 return true;
             }else{
                 display->getLCD()->setMessage("CHECK ELECTRODE PADS");

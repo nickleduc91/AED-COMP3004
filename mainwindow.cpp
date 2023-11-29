@@ -40,11 +40,16 @@ MainWindow::MainWindow(QWidget *parent)
     AED* aedDevice = new AED();
     aed = aedDevice;
 
+    // Initially disable power button
+    ui->powerButton->setEnabled(false);
+
     connect(aed->display->getGraphics(), &Graphics::callHandleIlluminateGraphic, this, &MainWindow::handleIlluminateGraphic);
     connect(aed->display->getLCD(), &LCD::callHandlelogToDisplay, this, &MainWindow::handleLogToDisplay);
     connect(aed, &AED::callHandleStatusUpdate, this, &MainWindow::handleStatusUpdate);
     connect(aed, SIGNAL(updateBatteryLevel(int)), this, SLOT(updateBatteryLevel(int)));
     connect(aed, SIGNAL(deadBattery()), this, SLOT(deadAED()));
+    connect(ui->plugIn, SIGNAL(released()), this, SLOT(plugInPressed()));
+    connect(ui->plugOut, SIGNAL(released()), this, SLOT(plugOutPressed()));
 
 }
 
@@ -62,49 +67,67 @@ void MainWindow::onSpinBoxAgeChanged(int age) {
     }
 }
 
+void MainWindow::plugInPressed() {
+    ui->powerButton->setEnabled(true);
+    //std::cout << "plugInPressed - Power Button Enabled: " << isPluggedIn << std::endl;
+}
+
+void MainWindow::plugOutPressed() {
+    ui->powerButton->setEnabled(false);
+    disableButtons();
+    //Enable height and weight spinners when aed turns off
+    ui->ageBox->setEnabled(true);
+    ui->weightBox->setEnabled(true);
+    ui->wetChestBox->setEnabled(true);
+    ui->status_text->setStyleSheet("background-color: white; border:");
+    aed->handlePowerOff();
+}
+
 void MainWindow::powerOn() {
-    if(!aed->isOn()) {
-        //setting self test variables from ui
-        bool defibConnection = ui->defib_electro->isChecked();
-        bool ecgCircuitry = ui->ecg_circuitry->isChecked();
-        bool defibCharge = ui->defib_charge_discharge->isChecked();
-        bool microprocessorHardSoftware = ui->microprossesor_hard_soft->isChecked();
-        bool cprCircuitrySensor = ui->cpr_circuitry_sensor->isChecked();
-        bool audioCircuitry = ui->audio_circuitry->isChecked();
+    if(ui->powerButton->isEnabled()){
+        if(!aed->isOn()) {
+            std::cout << "Power is ON" << std::endl;
+            //setting self test variables from ui
+            bool defibConnection = ui->defib_electro->isChecked();
+            bool ecgCircuitry = ui->ecg_circuitry->isChecked();
+            bool defibCharge = ui->defib_charge_discharge->isChecked();
+            bool microprocessorHardSoftware = ui->microprossesor_hard_soft->isChecked();
+            bool cprCircuitrySensor = ui->cpr_circuitry_sensor->isChecked();
+            bool audioCircuitry = ui->audio_circuitry->isChecked();
 
-        //set victim weight and height
-        int victimAge = ui->ageBox->value();
-        int victimWeight = ui->weightBox->value();
-        bool isWet = ui->wetChestBox->isChecked();
-        bool isHairy = ui->hairyChestBox->isChecked();
+            //set victim weight and height
+            int victimAge = ui->ageBox->value();
+            int victimWeight = ui->weightBox->value();
+            bool isWet = ui->wetChestBox->isChecked();
+            bool isHairy = ui->hairyChestBox->isChecked();
 
-        aed->setVictim(victimAge, victimWeight, isHairy, isWet);
+            aed->setVictim(victimAge, victimWeight, isHairy, isWet);
 
-        //Disable clipper based on age
-        isHairy ? ui->useClipperBox->setDisabled(false) : ui->useClipperBox->setDisabled(true);
-        isWet ? ui->useTowelBox->setDisabled(false) : ui->useTowelBox->setDisabled(true);
+            //Disable clipper based on age
+            isHairy ? ui->useClipperBox->setDisabled(false) : ui->useClipperBox->setDisabled(true);
+            isWet ? ui->useTowelBox->setDisabled(false) : ui->useTowelBox->setDisabled(true);
 
-        //Disable height and weight spinners when aed turns on
-        ui->ageBox->setDisabled(true);
-        ui->weightBox->setDisabled(true);
-        ui->wetChestBox->setDisabled(true);
-        ui->hairyChestBox->setDisabled(true);
+            //Disable height and weight spinners when aed turns on
+            ui->ageBox->setDisabled(true);
+            ui->weightBox->setDisabled(true);
+            ui->wetChestBox->setDisabled(true);
+            ui->hairyChestBox->setDisabled(true);
 
-        //calling self test and exiting function if test fails
-        if(!aed->performSelfTest(defibConnection,ecgCircuitry,defibCharge,microprocessorHardSoftware,cprCircuitrySensor,audioCircuitry)) {return;}
-        ui->aedFrame->setStyleSheet(nullptr);
-        aed->handlePowerOn();
-    } else {
-        disableButtons();
-        //Enable height and weight spinners when aed turns off
-        ui->ageBox->setEnabled(true);
-        ui->weightBox->setEnabled(true);
-        ui->wetChestBox->setEnabled(true);
-        ui->status_text->setStyleSheet("background-color: white; border:");
+            //calling self test and exiting function if test fails
+            if(!aed->performSelfTest(defibConnection,ecgCircuitry,defibCharge,microprocessorHardSoftware,cprCircuitrySensor,audioCircuitry)) {return;}
+            ui->aedFrame->setStyleSheet(nullptr);
+            aed->handlePowerOn();
+        } else {
+            disableButtons();
+            //Enable height and weight spinners when aed turns off
+            ui->ageBox->setEnabled(true);
+            ui->weightBox->setEnabled(true);
+            ui->wetChestBox->setEnabled(true);
+            ui->status_text->setStyleSheet("background-color: white; border:");
 
-        aed->handlePowerOff();
+            aed->handlePowerOff();
+        }
     }
-
 }
 
 void MainWindow::deadAED(){
@@ -268,3 +291,4 @@ void MainWindow::disableButtons() {
     ui->status_text->setStyleSheet("");
     ui->test_control_panel->setEnabled(true); //enable test panel when off
 }
+

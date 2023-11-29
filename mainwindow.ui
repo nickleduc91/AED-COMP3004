@@ -70,7 +70,7 @@ border-radius:35px;
    <widget class="QPushButton" name="plugIn">
     <property name="geometry">
      <rect>
-      <x>440</x>
+      <x>380</x>
       <y>590</y>
       <width>81</width>
       <height>41</height>
@@ -83,7 +83,7 @@ border-radius:35px;
    <widget class="QPushButton" name="changeBatteries">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>260</x>
       <y>590</y>
       <width>121</width>
       <height>41</height>
@@ -765,8 +765,8 @@ border-radius: 7px;</string>
    <widget class="QLabel" name="status_text">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>597</y>
+      <x>20</x>
+      <y>600</y>
       <width>161</width>
       <height>26</height>
      </rect>
@@ -812,6 +812,22 @@ border-radius: 7px;</string>
      <string>Has a wet chest</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="plugOut">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>590</y>
+      <width>81</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Plug Out</string>
+    </property>
+   </widget>
    <zorder>aedFrame</zorder>
    <zorder>powerButton</zorder>
    <zorder>label</zorder>
@@ -850,6 +866,7 @@ border-radius: 7px;</string>
    <zorder>status_text</zorder>
    <zorder>hairyChestBox</zorder>
    <zorder>wetChestBox</zorder>
+   <zorder>plugOut</zorder>
   </widget>
  </widget>
  <resources/>
