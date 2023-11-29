@@ -68,11 +68,33 @@ void AED::handleCallForHelp() {
 void AED::handleAnalyze() {
     display->getLCD()->setMessage("DON'T TOUCH PATIENT, ANALYZING");
     QTimer::singleShot(1500, this, [=]() {
-        if(isArythmia()) {
+        if(getRhythm() == 1 || getRhythm() == 2) {
+
+            //if getRhythm() = vfib (1)
+                //display graph
+                    //Signal to mainwindow
+                    //emit vfib_graph_signal();
+
+            //if getRhythm() = vtac (2)
+                //display graph
+                    //Signal to mainwindow
+                    //emit vtac_graph_signal();
+
             //Enable the shock button
             display->getLCD()->setMessage("SHOCK ADVISED");
             display->getGraphics()->illuminateGraphic(6);
         } else {
+
+            //if getRhythm() = normal (0)
+                //display graph
+                    //Signal to mainwindow
+                    //emit normal_graph_signal();
+
+            //if getRhythm() = flatline (3)
+                //display graph
+                    //Signal to mainwindow
+                    //emit flatline_graph_signal();
+
             //Perform CPR if shock is not issued
             display->getLCD()->setMessage("NO SHOCK ADVISED");
             display->getGraphics()->illuminateGraphic(5);

@@ -24,6 +24,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->ageBox, SIGNAL(valueChanged(int)), this, SLOT(onSpinBoxAgeChanged(int)));
     connect(ui->breatheButton, SIGNAL(released()), this, SLOT(breaths()));
 
+    //Graph setup
+    ui->ecgGraph->addGraph();
+    ui->ecgGraph->graph(0)->setScatterStyle(QCPScatterStyle::ssCircle);
+    ui->ecgGraph->graph(0)->setLineStyle(QCPGraph::lsLine);
+    ui->ecgGraph->xAxis->setRange(0,1000);
+    ui->ecgGraph->yAxis->setRange(0,140);
+
+    connect(aed, SIGNAL(vfib_graph_signal()), this, SLOT(vfib_graph_slot()));
+    connect(aed, SIGNAL(vtac_graph_signal()), this, SLOT(vtac_graph_slot()));
+    connect(aed, SIGNAL(normal_graph_signal()), this, SLOT(normal_graph_slot()));
+    connect(aed, SIGNAL(flatline_graph_signal()), this, SLOT(flatline_graph_slot()));
 
     //Set up the log info section on the GUI
     label = new QLabel(this);
@@ -291,4 +302,39 @@ void MainWindow::disableButtons() {
     ui->status_text->setText("SELF-TEST STATUS");
     ui->status_text->setStyleSheet("");
     ui->test_control_panel->setEnabled(true); //enable test panel when off
+}
+
+void MainWindow::vfib_graph_slot(){
+    //QVector<double> x = {1,2,3,4,5}, y = {4,6,8,2,5};
+    //ui->ecgGraph->graph(0)->setData(x,y);
+    //ui->ecgGraph->rescaleAxes();
+    //ui->ecgGraph->replot();
+    //ui->ecgGraph->update();
+
+}
+
+void MainWindow::vtac_graph_slot(){
+    //QVector<double> x = {1,2,3,4,5}, y = {4,6,8,2,5};
+    //ui->ecgGraph->graph(0)->setData(x,y);
+    //ui->ecgGraph->rescaleAxes();
+    //ui->ecgGraph->replot();
+    //ui->ecgGraph->update();
+
+}
+
+void MainWindow::normal_graph_slot(){
+    //QVector<double> x = {1,2,3,4,5}, y = {4,6,8,2,5};
+    //ui->ecgGraph->graph(0)->setData(x,y);
+    //ui->ecgGraph->rescaleAxes();
+    //ui->ecgGraph->replot();
+    //ui->ecgGraph->update();
+
+}
+
+void MainWindow::flatline_graph_slot(){
+    //QVector<double> x = {1,2,3,4,5}, y = {4,6,8,2,5};
+    //ui->ecgGraph->graph(0)->setData(x,y);
+    //ui->ecgGraph->rescaleAxes();
+    //ui->ecgGraph->replot();
+    //ui->ecgGraph->update();
 }

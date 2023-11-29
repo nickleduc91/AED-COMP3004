@@ -802,6 +802,16 @@ border-radius: 7px;</string>
      <string>Has a wet chest</string>
     </property>
    </widget>
+   <widget class="QCustomPlot" name="ecgGraph" native="true">
+    <property name="geometry">
+     <rect>
+      <x>820</x>
+      <y>370</y>
+      <width>261</width>
+      <height>201</height>
+     </rect>
+    </property>
+   </widget>
    <zorder>aedFrame</zorder>
    <zorder>powerButton</zorder>
    <zorder>label</zorder>
@@ -834,8 +844,17 @@ border-radius: 7px;</string>
    <zorder>status_text</zorder>
    <zorder>hairyChestBox</zorder>
    <zorder>wetChestBox</zorder>
+   <zorder>ecgGraph</zorder>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
