@@ -31,11 +31,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->ecgGraph->xAxis->setRange(0,1000);
     ui->ecgGraph->yAxis->setRange(0,140);
 
-    connect(aed, SIGNAL(vfib_graph_signal()), this, SLOT(vfib_graph_slot()));
-    connect(aed, SIGNAL(vtac_graph_signal()), this, SLOT(vtac_graph_slot()));
-    connect(aed, SIGNAL(normal_graph_signal()), this, SLOT(normal_graph_slot()));
-    connect(aed, SIGNAL(flatline_graph_signal()), this, SLOT(flatline_graph_slot()));
-
     //Set up the log info section on the GUI
     label = new QLabel(this);
     label->setAlignment(Qt::AlignCenter); // Set horizontal alignment to center
@@ -52,12 +47,19 @@ MainWindow::MainWindow(QWidget *parent)
     AED* aedDevice = new AED();
     aed = aedDevice;
 
+    //Signals
     connect(aed->display->getGraphics(), &Graphics::callHandleIlluminateGraphic, this, &MainWindow::handleIlluminateGraphic);
     connect(aed->display->getLCD(), &LCD::callHandlelogToDisplay, this, &MainWindow::handleLogToDisplay);
     connect(aed, &AED::callHandleStatusUpdate, this, &MainWindow::handleStatusUpdate);
     connect(aed, SIGNAL(updateBatteryLevel(int)), this, SLOT(updateBatteryLevel(int)));
     connect(aed, SIGNAL(deadBattery()), this, SLOT(deadAED()));
     connect(aed, SIGNAL(pushHarder()), this, SLOT(needHarderCompressions()));
+
+    //Graph signals
+    connect(aed, &AED::vfib_graph_signal, this, &MainWindow::vfib_graph_slot);
+    connect(aed, &AED::vtac_graph_signal, this, &MainWindow::vtac_graph_slot);
+    connect(aed, &AED::normal_graph_signal, this, &MainWindow::normal_graph_slot);
+    connect(aed, &AED::flatline_graph_signal, this, &MainWindow::flatline_graph_slot);
 }
 
 MainWindow::~MainWindow()

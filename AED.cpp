@@ -112,8 +112,10 @@ void AED::handleShock() {
     display->getLCD()->updateShockCount(shockCount);
     setDelayedMessage("SHOCK DELIVERED", 1500);
     //Start CPR after shock is issued
-    display->getGraphics()->illuminateGraphic(5);
-    setDelayedMessage("START CPR", 1500);
+    QTimer::singleShot(1500, this, [=]() {
+        display->getGraphics()->illuminateGraphic(5);
+        display->getLCD()->setMessage("START CPR");
+    });
 
 }
 
