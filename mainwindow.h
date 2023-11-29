@@ -46,5 +46,9 @@ public slots:
     void handleIlluminateGraphic(int step);
     void handleLogToDisplay(string message, string type);
     void handleStatusUpdate(string message, bool status);
+    void vfib_graph_slot();
+    void vtac_graph_slot();
+    void normal_graph_slot();
+    void flatline_graph_slot();
 };
 #endif // MAINWINDOW_H
