@@ -23,11 +23,12 @@ class AED : public QObject {
         void handleCallForHelp();
         void handleAnalyze();
         void handleAttach(bool left, bool right, bool back, bool ripped, bool towel, bool clip);
-        void handleCompress();
+        void handleCompress(bool);
         void handleBreathe();
         void handlePowerOff();
         void handleShock();
         void handleNewBatteries();
+        void failedSelfTest();
 
         void analyzeHeart();
         bool checkPads(bool left, bool right, bool back, bool ripped, bool towel, bool clip); // Check if the pads were attached properly
@@ -88,6 +89,7 @@ class AED : public QObject {
         void callHandleStatusUpdate(string message,bool status);
         void updateBatteryLevel(int);
         void deadBattery();
+        void pushHarder();
         void vfib_graph_signal();
         void vtac_graph_signal();
         void normal_graph_signal();

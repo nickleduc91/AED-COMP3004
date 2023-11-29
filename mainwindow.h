@@ -41,6 +41,8 @@ private slots:
     void deadAED();
     void changeBatteries();
     void onSpinBoxAgeChanged(int);
+    void needHarderCompressions();
+    void breaths();
 
 public slots:
     void handleIlluminateGraphic(int step);

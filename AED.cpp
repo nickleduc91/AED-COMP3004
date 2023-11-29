@@ -144,12 +144,34 @@ void AED::decrementBatteryLevel() {
     }
 }
 
-void AED::handleCompress() {
-
+void AED::handleCompress(bool pressedHardEnough) {
+    display->getLCD()->setMessage("START CPR");
+    if (pressedHardEnough) {
+        setDelayedMessage("CONTINUE CPR", 1250);
+        QTimer::singleShot(5000, this, [=]() {
+            display->getLCD()->setMessage("STOP CPR");
+            QTimer::singleShot(2000, this, [=]() {
+                display->getLCD()->setMessage("GIVE TWO BREATHS");
+                display->getGraphics()->illuminateGraphic(7);
+            });
+        });
+    } else {
+        setDelayedMessage("PUSH HARDER", 1250);
+        QTimer::singleShot(3500, this, [=]() {
+            emit pushHarder();
+        });
+    }
 }
 
 void AED::handleBreathe() {
     ecgIndex++; //Increment the index so we can get the next rhythm before analyzing
+    QTimer::singleShot(4000, this, [=]() {
+        display->getGraphics()->illuminateGraphic(4);
+    });
+}
+
+void AED::failedSelfTest() {
+    display->getLCD()->setMessage("UNIT FAILED");
 }
 
 bool AED::checkPads(bool left, bool right, bool back, bool ripped, bool towel, bool clip){
