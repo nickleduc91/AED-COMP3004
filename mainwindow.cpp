@@ -27,7 +27,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     //Graph setup
     ui->ecgGraph->addGraph();
-    ui->ecgGraph->graph(0)->setScatterStyle(QCPScatterStyle::ssCircle);
     ui->ecgGraph->graph(0)->setLineStyle(QCPGraph::lsLine);
     ui->ecgGraph->xAxis->setRange(0,1000);
     ui->ecgGraph->yAxis->setRange(0,140);
@@ -62,6 +61,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(aed, &AED::vtac_graph_signal, this, &MainWindow::vtac_graph_slot);
     connect(aed, &AED::normal_graph_signal, this, &MainWindow::normal_graph_slot);
     connect(aed, &AED::flatline_graph_signal, this, &MainWindow::flatline_graph_slot);
+    QVector<double> x ={0,1}, y = {5,5};
+
+
+    ui->ecgGraph->xAxis->setTickLabels(false);
+    ui->ecgGraph->yAxis->setTickLabels(false);
+    ui->ecgGraph->graph(0)->setData(x, y);
+    ui->ecgGraph->xAxis->setRange(-5, 5);
+    ui->ecgGraph->yAxis->setRange(-10, 10);
+    ui->ecgGraph->graph(0)->rescaleAxes();
+    ui->ecgGraph->replot();
+
 }
 
 MainWindow::~MainWindow()
@@ -330,36 +340,92 @@ void MainWindow::handleDisableStep(int step) {
 }
 
 void MainWindow::vfib_graph_slot(){
-    //QVector<double> x = {1,2,3,4,5}, y = {4,6,8,2,5};
-    //ui->ecgGraph->graph(0)->setData(x,y);
-    //ui->ecgGraph->rescaleAxes();
-    //ui->ecgGraph->replot();
-    //ui->ecgGraph->update();
+    QVector<double> x, y;
+    //VFIB
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(0, 100.0); // Range for random values
+    const double step = 2; // Define the step size for x-values
+       for (int i = 0; i <= 100; i += step) {
+           double x_val = i / 10.0; // Scale down the x-values to fit the plot
 
+           // Generate random values for a and b
+           double a = (3 * dis(gen)) - (3 * dis(gen));
+           double b = (2 * dis(gen)) - (2 * dis(gen));
+
+           // Calculate s1 based on a, b, and x_val
+           double result = 0.0;
+           for (int n = 1; n <= 100; ++n) { // You might adjust the upper limit of the loop according to your needs
+               result += sin((a * x_val * M_PI) + b) / (0.01 * n + 8);
+           }
+
+           x.append(x_val);
+           y.append(result);
+    }
+
+    ui->ecgGraph->xAxis->setTickLabels(false);
+    ui->ecgGraph->yAxis->setTickLabels(false);
+    ui->ecgGraph->graph(0)->setData(x, y);
+    ui->ecgGraph->xAxis->setRange(-5, 5);
+    ui->ecgGraph->yAxis->setRange(-10, 10);
+    ui->ecgGraph->graph(0)->rescaleAxes();
+    ui->ecgGraph->replot();
 }
 
 void MainWindow::vtac_graph_slot(){
-    //QVector<double> x = {1,2,3,4,5}, y = {4,6,8,2,5};
-    //ui->ecgGraph->graph(0)->setData(x,y);
-    //ui->ecgGraph->rescaleAxes();
-    //ui->ecgGraph->replot();
-    //ui->ecgGraph->update();
+    QVector<double> x, y;
+    //VTAC
+    const double step = 2; // Define the step size for x-values
+    for (int i = 0; i <= 100; i += step) {
+        double x_val = i / 10.0; // Scale down the x-values to fit the plot
+        double result = 6 * (fabs(sin(x_val))) * fabs(sin(x_val));
+        x.append(x_val);
+        y.append(result);
+    }
 
+    ui->ecgGraph->xAxis->setTickLabels(false);
+    ui->ecgGraph->yAxis->setTickLabels(false);
+    ui->ecgGraph->graph(0)->setData(x, y);
+    ui->ecgGraph->xAxis->setRange(-5, 5);
+    ui->ecgGraph->yAxis->setRange(-10, 10);
+    ui->ecgGraph->graph(0)->rescaleAxes();
+    ui->ecgGraph->replot();
 }
 
 void MainWindow::normal_graph_slot(){
-    //QVector<double> x = {1,2,3,4,5}, y = {4,6,8,2,5};
-    //ui->ecgGraph->graph(0)->setData(x,y);
-    //ui->ecgGraph->rescaleAxes();
-    //ui->ecgGraph->replot();
-    //ui->ecgGraph->update();
+    QVector<double> x, y;
 
+    //NORMAL
+    const double step = 2;
+    for (int i = 0; i <= 300; i += step) {
+            double x_val = i / 10.0; // Scale down the x-values to fit the plot
+            double result = (-0.5 * pow(sin(0.3 * x_val - 3), 10) +
+                            0.8 * pow(sin(0.3 * x_val + 5.5), 22) +
+                            7 * pow(sin(0.3 * x_val), 300) +
+                            0.5 * pow(sin(0.3 * x_val + 0.9), 16) -
+                            0.2 * pow(sin(0.5 * x_val), 10));
+            x.append(x_val);
+            y.append(result);
+    }
+
+    ui->ecgGraph->xAxis->setTickLabels(false);
+    ui->ecgGraph->yAxis->setTickLabels(false);
+    ui->ecgGraph->graph(0)->setData(x, y);
+    ui->ecgGraph->xAxis->setRange(-5, 5);
+    ui->ecgGraph->yAxis->setRange(-10, 10);
+    ui->ecgGraph->graph(0)->rescaleAxes();
+    ui->ecgGraph->replot();
 }
 
 void MainWindow::flatline_graph_slot(){
-    //QVector<double> x = {1,2,3,4,5}, y = {4,6,8,2,5};
-    //ui->ecgGraph->graph(0)->setData(x,y);
-    //ui->ecgGraph->rescaleAxes();
-    //ui->ecgGraph->replot();
-    //ui->ecgGraph->update();
+    QVector<double> x ={0,1}, y = {5,5};
+
+
+    ui->ecgGraph->xAxis->setTickLabels(false);
+    ui->ecgGraph->yAxis->setTickLabels(false);
+    ui->ecgGraph->graph(0)->setData(x, y);
+    ui->ecgGraph->xAxis->setRange(-5, 5);
+    ui->ecgGraph->yAxis->setRange(-10, 10);
+    ui->ecgGraph->graph(0)->rescaleAxes();
+    ui->ecgGraph->replot();
 }
