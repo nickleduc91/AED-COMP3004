@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1092</width>
-    <height>671</height>
+    <width>1137</width>
+    <height>663</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -717,6 +717,14 @@ color: rgb(255, 255, 255);</string>
       <string>0.5 inches</string>
      </property>
     </widget>
+    <zorder>useTowelBox</zorder>
+    <zorder>attachButton</zorder>
+    <zorder>oneAndHalfInches</zorder>
+    <zorder>oneInch</zorder>
+    <zorder>twoInches</zorder>
+    <zorder>twoAndHalfInches</zorder>
+    <zorder>halfInches</zorder>
+    <zorder>useClipperBox</zorder>
    </widget>
    <widget class="QLCDNumber" name="battery_lcd">
     <property name="geometry">

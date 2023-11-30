@@ -61,16 +61,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(aed, &AED::vtac_graph_signal, this, &MainWindow::vtac_graph_slot);
     connect(aed, &AED::normal_graph_signal, this, &MainWindow::normal_graph_slot);
     connect(aed, &AED::flatline_graph_signal, this, &MainWindow::flatline_graph_slot);
-    QVector<double> x ={0,1}, y = {5,5};
-
 
     ui->ecgGraph->xAxis->setTickLabels(false);
     ui->ecgGraph->yAxis->setTickLabels(false);
-    ui->ecgGraph->graph(0)->setData(x, y);
-    ui->ecgGraph->xAxis->setRange(-5, 5);
-    ui->ecgGraph->yAxis->setRange(-10, 10);
-    ui->ecgGraph->graph(0)->rescaleAxes();
-    ui->ecgGraph->replot();
 
 }
 

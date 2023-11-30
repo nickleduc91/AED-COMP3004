@@ -112,15 +112,11 @@ void AED::handleAnalyze() {
     QTimer::singleShot(1500, this, [=]() {
         if(getRhythm() == 1 || getRhythm() == 2) {
 
-            //if getRhythm() = vfib (1)
-                //display graph
-                    //Signal to mainwindow
-                    //emit vfib_graph_signal();
-
-            //if getRhythm() = vtac (2)
-                //display graph
-                    //Signal to mainwindow
-                    //emit vtac_graph_signal();
+            if(getRhythm() == 1) {
+                emit vfib_graph_signal();
+            } else if(getRhythm() == 2) {
+                emit vtac_graph_signal();
+            }
 
             //Enable the shock button
             currentStep = 6;
@@ -128,15 +124,11 @@ void AED::handleAnalyze() {
             display->getGraphics()->illuminateGraphic(6);
         } else {
 
-            //if getRhythm() = normal (0)
-                //display graph
-                    //Signal to mainwindow
-                    //emit normal_graph_signal();
-
-            //if getRhythm() = flatline (3)
-                //display graph
-                    //Signal to mainwindow
-                    //emit flatline_graph_signal();
+            if(getRhythm() == 0) {
+                emit normal_graph_signal();
+            } else if(getRhythm() == 3) {
+                emit flatline_graph_signal();
+            }
 
             //Perform CPR if shock is not issued
             currentStep = 5;
