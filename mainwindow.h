@@ -43,6 +43,7 @@ private slots:
     void onSpinBoxAgeChanged(int);
     void needHarderCompressions();
     void breaths();
+    void plugInOut();
 
 public slots:
     void handleIlluminateGraphic(int step);
@@ -52,5 +53,6 @@ public slots:
     void vtac_graph_slot();
     void normal_graph_slot();
     void flatline_graph_slot();
+    void handleDisableStep(int step);
 };
 #endif // MAINWINDOW_H

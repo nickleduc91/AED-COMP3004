@@ -67,17 +67,17 @@ border-radius:35px;
      <string>Shock</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="plugIn">
+   <widget class="QPushButton" name="plugInOutButton">
     <property name="geometry">
      <rect>
       <x>440</x>
       <y>590</y>
-      <width>81</width>
+      <width>131</width>
       <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>Plug in</string>
+     <string>Unplug Electrode</string>
     </property>
    </widget>
    <widget class="QPushButton" name="changeBatteries">
@@ -816,7 +816,7 @@ border-radius: 7px;</string>
    <zorder>powerButton</zorder>
    <zorder>label</zorder>
    <zorder>shockButton</zorder>
-   <zorder>plugIn</zorder>
+   <zorder>plugInOutButton</zorder>
    <zorder>changeBatteries</zorder>
    <zorder>test_control_panel</zorder>
    <zorder>label_4</zorder>

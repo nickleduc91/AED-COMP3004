@@ -13,6 +13,9 @@ class Electrode {
         void plugInElectrode();
         void unplugElectrode();
 
+        bool isElectrodePluggedIn() { return isElectrodeAttachedProperly; }
+        void setElectrodePluggedIn(bool status) { isElectrodeAttachedProperly = status; }
+
     private:
        bool isElectrodeAttachedProperly;
 

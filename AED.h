@@ -29,6 +29,7 @@ class AED : public QObject {
         void handleShock();
         void handleNewBatteries();
         void failedSelfTest();
+        void handlePlugInOutElectrode();
 
         void analyzeHeart();
         bool checkPads(bool left, bool right, bool back, bool ripped, bool towel, bool clip); // Check if the pads were attached properly
