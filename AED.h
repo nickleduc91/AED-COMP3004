@@ -17,7 +17,7 @@ class AED : public QObject {
     public:
         AED(bool, bool, bool , bool, bool, bool, bool, int age, int weight, bool dry, bool hairy);
         AED();
-        bool performSelfTest(bool defibConnection,bool ecgCircuitry,bool defibCharge,bool microprocessor,bool cprCircuitrySensor,bool audioCircuitry);
+        bool performSelfTest(bool ecgCircuitry,bool defibCharge,bool microprocessor,bool cprCircuitrySensor,bool audioCircuitry);
         void handlePowerOn();
         void handleCheckResponsiveness();
         void handleCallForHelp();

@@ -30,32 +30,36 @@ AED::AED() {
 void AED::handlePlugInOutElectrode() {
     if(electrode->isElectrodePluggedIn()) {
         electrode->setElectrodePluggedIn(false);
-        display->getLCD()->setMessage("PLUG IN CABLE");
-        if(currentStep == 4) {
-            display->getGraphics()->disableStep(4);
-        } else if(currentStep == 6) {
-            display->getGraphics()->disableStep(6);
-        } else if(currentStep == 5) {
-            display->getGraphics()->disableStep(5);
+        if(isPoweredOn) {
+            display->getLCD()->setMessage("PLUG IN CABLE");
+            if(currentStep == 4) {
+                display->getGraphics()->disableStep(4);
+            } else if(currentStep == 6) {
+                display->getGraphics()->disableStep(6);
+            } else if(currentStep == 5) {
+                display->getGraphics()->disableStep(5);
+            }
         }
     } else {
         electrode->setElectrodePluggedIn(true);
-        if(currentStep == 1) {
-            display->getLCD()->setMessage("CHECK RESPONSIVENESS");
-        } else if(currentStep == 2) {
-            display->getLCD()->setMessage("CALL FOR HELP");
-        } else if(currentStep == 3) {
-            display->getLCD()->setMessage("ATTACH DEFIB PADS TO PATIENT'S BARE CHEST");
-        } else if(currentStep == 4) {
-            isAdult() ? display->getLCD()->setMessage("ADULT PADS") : display->getLCD()->setMessage("PEDIATRIC PADS");
-            display->getGraphics()->illuminateGraphic(4);
-        } else if(currentStep == 6){
-            handleAnalyze();
-        } else if(currentStep == 5) {
-            display->getLCD()->setMessage("START CPR");
-            display->getGraphics()->illuminateGraphic(5);
-        } else if(currentStep == 7) {
-            display->getLCD()->setMessage("GIVE TWO BREATHS");
+        if(isPoweredOn) {
+            if(currentStep == 1) {
+                display->getLCD()->setMessage("CHECK RESPONSIVENESS");
+            } else if(currentStep == 2) {
+                display->getLCD()->setMessage("CALL FOR HELP");
+            } else if(currentStep == 3) {
+                display->getLCD()->setMessage("ATTACH DEFIB PADS TO PATIENT'S BARE CHEST");
+            } else if(currentStep == 4) {
+                isAdult() ? display->getLCD()->setMessage("ADULT PADS") : display->getLCD()->setMessage("PEDIATRIC PADS");
+                display->getGraphics()->illuminateGraphic(4);
+            } else if(currentStep == 6){
+                handleAnalyze();
+            } else if(currentStep == 5) {
+                display->getLCD()->setMessage("START CPR");
+                display->getGraphics()->illuminateGraphic(5);
+            } else if(currentStep == 7) {
+                display->getLCD()->setMessage("GIVE TWO BREATHS");
+            }
         }
     }
 }
@@ -271,9 +275,9 @@ bool AED::checkPads(bool left, bool right, bool back, bool ripped, bool towel, b
 
 }
 
-bool AED::performSelfTest(bool defibConnection,bool ecgCircuitry,bool defibCharge,bool microprocessor,bool cprCircuitrySensor,bool audioCircuitry) {
+bool AED::performSelfTest(bool ecgCircuitry,bool defibCharge,bool microprocessor,bool cprCircuitrySensor,bool audioCircuitry) {
     string statusMessage = "FAILED";
-    if(batteryLevel > 10 && !defibConnection && !ecgCircuitry && !defibCharge && !microprocessor && !cprCircuitrySensor && !audioCircuitry){
+    if(batteryLevel > 10 && electrode->isElectrodePluggedIn() && !ecgCircuitry && !defibCharge && !microprocessor && !cprCircuitrySensor && !audioCircuitry){
         isPassedTest = true;
         statusMessage = "PASSED";
     }else {

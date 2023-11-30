@@ -90,7 +90,6 @@ void MainWindow::plugInOut() {
 void MainWindow::powerOn() {
     if(!aed->isOn()) {
         //setting self test variables from ui
-        bool defibConnection = ui->defib_electro->isChecked();
         bool ecgCircuitry = ui->ecg_circuitry->isChecked();
         bool defibCharge = ui->defib_charge_discharge->isChecked();
         bool microprocessorHardSoftware = ui->microprossesor_hard_soft->isChecked();
@@ -116,7 +115,7 @@ void MainWindow::powerOn() {
         ui->hairyChestBox->setDisabled(true);
 
         //calling self test and exiting function if test fails
-        if(!aed->performSelfTest(defibConnection,ecgCircuitry,defibCharge,microprocessorHardSoftware,cprCircuitrySensor,audioCircuitry)) {return;}
+        if(!aed->performSelfTest(ecgCircuitry,defibCharge,microprocessorHardSoftware,cprCircuitrySensor,audioCircuitry)) {return;}
         ui->aedFrame->setStyleSheet(nullptr);
         aed->handlePowerOn();
     } else {
