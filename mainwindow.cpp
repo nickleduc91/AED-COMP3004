@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->compressButton, SIGNAL(released()), this, SLOT(compress()));
     connect(ui->ageBox, SIGNAL(valueChanged(int)), this, SLOT(onSpinBoxAgeChanged(int)));
     connect(ui->breatheButton, SIGNAL(released()), this, SLOT(breaths()));
+    connect(ui->plugInOutButton, SIGNAL(released()), this, SLOT(plugInOut()));
 
     //Graph setup
     ui->ecgGraph->addGraph();
@@ -49,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     //Signals
     connect(aed->display->getGraphics(), &Graphics::callHandleIlluminateGraphic, this, &MainWindow::handleIlluminateGraphic);
+    connect(aed->display->getGraphics(), &Graphics::callHandleDisableStep, this, &MainWindow::handleDisableStep);
     connect(aed->display->getLCD(), &LCD::callHandlelogToDisplay, this, &MainWindow::handleLogToDisplay);
     connect(aed, &AED::callHandleStatusUpdate, this, &MainWindow::handleStatusUpdate);
     connect(aed, SIGNAL(updateBatteryLevel(int)), this, SLOT(updateBatteryLevel(int)));
@@ -76,10 +78,18 @@ void MainWindow::onSpinBoxAgeChanged(int age) {
     }
 }
 
+void MainWindow::plugInOut() {
+    if(!aed->electrode->isElectrodePluggedIn()) {
+        ui->plugInOutButton->setText("Unplug Electrode");
+    } else {
+        ui->plugInOutButton->setText("Plug In Electrode");
+    }
+    aed->handlePlugInOutElectrode();
+}
+
 void MainWindow::powerOn() {
     if(!aed->isOn()) {
         //setting self test variables from ui
-        bool defibConnection = ui->defib_electro->isChecked();
         bool ecgCircuitry = ui->ecg_circuitry->isChecked();
         bool defibCharge = ui->defib_charge_discharge->isChecked();
         bool microprocessorHardSoftware = ui->microprossesor_hard_soft->isChecked();
@@ -105,7 +115,7 @@ void MainWindow::powerOn() {
         ui->hairyChestBox->setDisabled(true);
 
         //calling self test and exiting function if test fails
-        if(!aed->performSelfTest(defibConnection,ecgCircuitry,defibCharge,microprocessorHardSoftware,cprCircuitrySensor,audioCircuitry)) {return;}
+        if(!aed->performSelfTest(ecgCircuitry,defibCharge,microprocessorHardSoftware,cprCircuitrySensor,audioCircuitry)) {return;}
         ui->aedFrame->setStyleSheet(nullptr);
         aed->handlePowerOn();
     } else {
@@ -304,6 +314,19 @@ void MainWindow::disableButtons() {
     ui->status_text->setText("SELF-TEST STATUS");
     ui->status_text->setStyleSheet("");
     ui->test_control_panel->setEnabled(true); //enable test panel when off
+}
+
+void MainWindow::handleDisableStep(int step) {
+    if(step == 4) {
+        ui->analyzeButton->setDisabled(true);
+        ui->analyzeButton->setStyleSheet("");
+    } else if(step == 6) {
+        ui->shockButton->setDisabled(true);
+        ui->shockButton->setStyleSheet("");
+    } else if(step == 5) {
+        ui->compressButton->setDisabled(true);
+        ui->compressButton->setStyleSheet("");
+    }
 }
 
 void MainWindow::vfib_graph_slot(){

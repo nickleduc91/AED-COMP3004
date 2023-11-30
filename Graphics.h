@@ -10,12 +10,13 @@ class Graphics : public QObject {
     public:
         Graphics();
         void illuminateGraphic(int step);
+        void disableStep(int step) { emit callHandleDisableStep(step); }
 
     private:
 
     signals:
         void callHandleIlluminateGraphic(int step);
-
+        void callHandleDisableStep(int step);
 
 };
 #endif // GRAPHICS_H

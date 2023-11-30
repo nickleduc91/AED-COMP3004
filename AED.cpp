@@ -27,10 +27,48 @@ AED::AED() {
 
 }
 
+void AED::handlePlugInOutElectrode() {
+    if(electrode->isElectrodePluggedIn()) {
+        electrode->setElectrodePluggedIn(false);
+        if(isPoweredOn) {
+            display->getLCD()->setMessage("PLUG IN CABLE");
+            if(currentStep == 4) {
+                display->getGraphics()->disableStep(4);
+            } else if(currentStep == 6) {
+                display->getGraphics()->disableStep(6);
+            } else if(currentStep == 5) {
+                display->getGraphics()->disableStep(5);
+            }
+        }
+    } else {
+        electrode->setElectrodePluggedIn(true);
+        if(isPoweredOn) {
+            if(currentStep == 1) {
+                display->getLCD()->setMessage("CHECK RESPONSIVENESS");
+            } else if(currentStep == 2) {
+                display->getLCD()->setMessage("CALL FOR HELP");
+            } else if(currentStep == 3) {
+                display->getLCD()->setMessage("ATTACH DEFIB PADS TO PATIENT'S BARE CHEST");
+            } else if(currentStep == 4) {
+                isAdult() ? display->getLCD()->setMessage("ADULT PADS") : display->getLCD()->setMessage("PEDIATRIC PADS");
+                display->getGraphics()->illuminateGraphic(4);
+            } else if(currentStep == 6){
+                handleAnalyze();
+            } else if(currentStep == 5) {
+                display->getLCD()->setMessage("START CPR");
+                display->getGraphics()->illuminateGraphic(5);
+            } else if(currentStep == 7) {
+                display->getLCD()->setMessage("GIVE TWO BREATHS");
+            }
+        }
+    }
+}
+
 void AED::handlePowerOn() {
     isPoweredOn = true;
     display->getLCD()->getTimer()->start(1000); //Start timer
     display->getLCD()->setMessage("UNIT OKAY");
+    currentStep = 1;
 
     QTimer::singleShot(2000, this, [=]() {
         display->getGraphics()->illuminateGraphic(1);
@@ -41,6 +79,7 @@ void AED::handlePowerOn() {
 
 void AED::handlePowerOff() {
     isPoweredOn = false;
+    currentStep = 0;
     // Stop the timer and remove messages on LCD
     display->getLCD()->getTimer()->stop();
     display->getLCD()->resetElapsedTime();
@@ -57,15 +96,18 @@ void AED::handleNewBatteries() {
 
 void AED::handleCheckResponsiveness() {
     display->getGraphics()->illuminateGraphic(2);
+    currentStep = 2;
     display->getLCD()->setMessage("CALL FOR HELP");
 }
 
 void AED::handleCallForHelp() {
     display->getGraphics()->illuminateGraphic(3);
+    currentStep = 3;
     display->getLCD()->setMessage("ATTACH DEFIB PADS TO PATIENT'S BARE CHEST");
 }
 
 void AED::handleAnalyze() {
+    currentStep = 4;
     display->getLCD()->setMessage("DON'T TOUCH PATIENT, ANALYZING");
     QTimer::singleShot(1500, this, [=]() {
         if(getRhythm() == 1 || getRhythm() == 2) {
@@ -81,6 +123,7 @@ void AED::handleAnalyze() {
                     //emit vtac_graph_signal();
 
             //Enable the shock button
+            currentStep = 6;
             display->getLCD()->setMessage("SHOCK ADVISED");
             display->getGraphics()->illuminateGraphic(6);
         } else {
@@ -96,6 +139,7 @@ void AED::handleAnalyze() {
                     //emit flatline_graph_signal();
 
             //Perform CPR if shock is not issued
+            currentStep = 5;
             display->getLCD()->setMessage("NO SHOCK ADVISED");
             display->getGraphics()->illuminateGraphic(5);
             setDelayedMessage("START CPR", 1500);
@@ -106,6 +150,7 @@ void AED::handleAnalyze() {
 }
 
 void AED::handleShock() {
+    currentStep = 5;
     display->getLCD()->setMessage("SHOCK WILL BE DELIVERED IN 3, 2, 1");
     electrode->shock(voltage);
     shockCount++;
@@ -128,7 +173,12 @@ void AED::setDelayedMessage(const string message, int delay) {
 void AED::handleAttach(bool left, bool right, bool back, bool ripped, bool towel, bool clip) {
 
     if(checkPads(left, right, back, ripped, towel, clip)) {
-        display->getGraphics()->illuminateGraphic(4);
+        currentStep = 4;
+        if(electrode->isElectrodePluggedIn()) {
+            display->getGraphics()->illuminateGraphic(4);
+        } else {
+            display->getGraphics()->disableStep(4);
+        }
     }
 }
 
@@ -147,6 +197,7 @@ void AED::decrementBatteryLevel() {
 }
 
 void AED::handleCompress(bool pressedHardEnough) {
+    currentStep = 5;
     display->getLCD()->setMessage("START CPR");
     if (pressedHardEnough) {
         setDelayedMessage("CONTINUE CPR", 1250);
@@ -163,12 +214,20 @@ void AED::handleCompress(bool pressedHardEnough) {
             emit pushHarder();
         });
     }
+    currentStep = 7;
 }
 
 void AED::handleBreathe() {
+    currentStep = 7;
     ecgIndex++; //Increment the index so we can get the next rhythm before analyzing
     QTimer::singleShot(4000, this, [=]() {
-        display->getGraphics()->illuminateGraphic(4);
+        if(electrode->isElectrodePluggedIn()) {
+            display->getGraphics()->illuminateGraphic(4);
+        } else {
+            display->getGraphics()->disableStep(4);
+        }
+
+        currentStep = 4;
     });
 }
 
@@ -196,7 +255,7 @@ bool AED::checkPads(bool left, bool right, bool back, bool ripped, bool towel, b
     }else{
         if(isVictimOverWeight){
             if(ripped && right && left && ( (isVictimWet && towel) || !isVictimWet) && ( (isVictimHairy && clip) || !isVictimHairy)){
-                display->getLCD()->setMessage("FAT ASS ATTACHED SUCCESSFULLY");
+                display->getLCD()->setMessage("ADULT PADS");
                 return true;
             }else{
                 display->getLCD()->setMessage("CHECK ELECTRODE PADS");
@@ -216,9 +275,9 @@ bool AED::checkPads(bool left, bool right, bool back, bool ripped, bool towel, b
 
 }
 
-bool AED::performSelfTest(bool defibConnection,bool ecgCircuitry,bool defibCharge,bool microprocessor,bool cprCircuitrySensor,bool audioCircuitry) {
+bool AED::performSelfTest(bool ecgCircuitry,bool defibCharge,bool microprocessor,bool cprCircuitrySensor,bool audioCircuitry) {
     string statusMessage = "FAILED";
-    if(batteryLevel > 10 && !defibConnection && !ecgCircuitry && !defibCharge && !microprocessor && !cprCircuitrySensor && !audioCircuitry){
+    if(batteryLevel > 10 && electrode->isElectrodePluggedIn() && !ecgCircuitry && !defibCharge && !microprocessor && !cprCircuitrySensor && !audioCircuitry){
         isPassedTest = true;
         statusMessage = "PASSED";
     }else {

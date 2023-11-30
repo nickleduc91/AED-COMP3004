@@ -10,24 +10,20 @@ CONFIG += c++11
 
 SOURCES += \
     AED.cpp \
-    ControlPanel.cpp \
     Display.cpp \
     Electrode.cpp \
     Graphics.cpp \
     LCD.cpp \
-    ShockIndicator.cpp \
     main.cpp \
     mainwindow.cpp \
     qcustomplot.cpp
 
 HEADERS += \
     AED.h \
-    ControlPanel.h \
     Display.h \
     Electrode.h \
     Graphics.h \
     LCD.h \
-    ShockIndicator.h \
     mainwindow.h \
     qcustomplot.h
 
