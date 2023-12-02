@@ -139,6 +139,7 @@ void MainWindow::deadAED(){
     ui->battery_lcd->setStyleSheet("background-color: black; color: white; border-radius: 7px;");
     ui->changeBatteries->setStyleSheet("background-color: yellow;");
     aed->setIsPoweredOn(true);
+    aed->setDelayedMessage("CHANGE BATTERIES", 1000);
     powerOn();
 }
 
