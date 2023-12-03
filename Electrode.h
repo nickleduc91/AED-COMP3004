@@ -10,9 +10,6 @@ class Electrode {
         Electrode();
         void shock(int voltage);
 
-        void plugInElectrode();
-        void unplugElectrode();
-
         bool isElectrodePluggedIn() { return isElectrodeAttachedProperly; }
         void setElectrodePluggedIn(bool status) { isElectrodeAttachedProperly = status; }
 

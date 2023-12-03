@@ -3,7 +3,6 @@
 
 #include "LCD.h"
 #include "Graphics.h"
-#include "ShockIndicator.h"
 
 using namespace std;
 
@@ -12,12 +11,10 @@ class Display {
         Display();
         LCD* getLCD() { return lcd; }
         Graphics* getGraphics() { return graphics; }
-        ShockIndicator* getIndicator() { return indicator; }
 
     private:
         LCD* lcd;
         Graphics* graphics;
-        ShockIndicator* indicator;
 
 };
 #endif // DISPLAY_H

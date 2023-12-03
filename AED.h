@@ -2,7 +2,6 @@
 #define AED_H
 
 #include <string>
-#include "ControlPanel.h"
 #include "Display.h"
 #include "Electrode.h"
 #include <vector>
@@ -15,7 +14,6 @@ using namespace std;
 class AED : public QObject {
     Q_OBJECT
     public:
-        AED(bool, bool, bool , bool, bool, bool, bool, int age, int weight, bool dry, bool hairy);
         AED();
         bool performSelfTest(bool ecgCircuitry,bool defibCharge,bool microprocessor,bool cprCircuitrySensor,bool audioCircuitry);
         void handlePowerOn();
@@ -31,9 +29,7 @@ class AED : public QObject {
         void failedSelfTest();
         void handlePlugInOutElectrode();
 
-        void analyzeHeart();
         bool checkPads(bool left, bool right, bool back, bool ripped, bool towel, bool clip); // Check if the pads were attached properly
-        void checkResponsiveness();
 
         void setVictim(int age, int weight, bool isHairy, bool isWet);
         void setDelayedMessage(const string message, int delay);
@@ -47,7 +43,6 @@ class AED : public QObject {
 
         bool isAdult() { return isVictimAdult; }
 
-        ControlPanel* cp;
         Display* display;
         Electrode* electrode;
 
@@ -58,12 +53,6 @@ class AED : public QObject {
 
         //Self-test variables
         int batteryLevel;
-        bool electrodeConnected;
-        bool ecgCircuitry;
-        bool defibCharge;
-        bool microprocessor;
-        bool cprCircuitry;
-        bool audioCircuitry;
 
         //Victim values
         int victimAge; //0-8 = child, 9 >= adult
