@@ -29,6 +29,7 @@ AED::AED() {
 
 void AED::handlePlugInOutElectrode() {
     if(electrode->isElectrodePluggedIn()) {
+        cout << "ELECTRODE: Unplugged" << endl;
         electrode->setElectrodePluggedIn(false);
         if(isPoweredOn) {
             display->getLCD()->setMessage("PLUG IN CABLE");
@@ -42,6 +43,7 @@ void AED::handlePlugInOutElectrode() {
         }
     } else {
         electrode->setElectrodePluggedIn(true);
+        cout << "ELECTRODE: Plugged In" << endl;
         if(isPoweredOn) {
             if(currentStep == 1) {
                 display->getLCD()->setMessage("CHECK RESPONSIVENESS");
@@ -66,6 +68,7 @@ void AED::handlePlugInOutElectrode() {
 
 void AED::handlePowerOn() {
     isPoweredOn = true;
+    cout << "AED: Powered On" << endl;
     display->getLCD()->getTimer()->start(1000); //Start timer
     display->getLCD()->setMessage("UNIT OKAY");
     currentStep = 1;
@@ -78,6 +81,7 @@ void AED::handlePowerOn() {
 }
 
 void AED::handlePowerOff() {
+    cout << "AED: Powered On" << endl;
     isPoweredOn = false;
     currentStep = 0;
     // Stop the timer and remove messages on LCD
@@ -88,6 +92,7 @@ void AED::handlePowerOff() {
 }
 
 void AED::handleNewBatteries() {
+    cout << "AED: Batteries changed" << endl;
     display->getLCD()->getTimer()->stop();
     display->getLCD()->resetElapsedTime();
     resetTotalTime();
@@ -95,26 +100,31 @@ void AED::handleNewBatteries() {
 }
 
 void AED::handleCheckResponsiveness() {
+    cout << "RESCUER: Checks responsiveness" << endl;
     display->getGraphics()->illuminateGraphic(2);
     currentStep = 2;
     display->getLCD()->setMessage("CALL FOR HELP");
 }
 
 void AED::handleCallForHelp() {
+    cout << "RESCUER: Calls for help" << endl;
     display->getGraphics()->illuminateGraphic(3);
     currentStep = 3;
     display->getLCD()->setMessage("ATTACH DEFIB PADS TO PATIENT'S BARE CHEST");
 }
 
 void AED::handleAnalyze() {
+    cout << "AED: Analyzing" << endl;
     currentStep = 4;
     display->getLCD()->setMessage("DON'T TOUCH PATIENT, ANALYZING");
     QTimer::singleShot(1500, this, [=]() {
         if(getRhythm() == 1 || getRhythm() == 2) {
 
             if(getRhythm() == 1) {
+                cout << "AED: Ventricular fibrillation rhythm detected" << endl;
                 emit vfib_graph_signal();
             } else if(getRhythm() == 2) {
+                cout << "AED: Ventricular tachycardia rhythm detected" << endl;
                 emit vtac_graph_signal();
             }
 
@@ -125,8 +135,10 @@ void AED::handleAnalyze() {
         } else {
 
             if(getRhythm() == 0) {
+                cout << "AED: Sinus rhythm detected" << endl;
                 emit normal_graph_signal();
             } else if(getRhythm() == 3) {
+                cout << "AED: Flat line rhythm detected" << endl;
                 emit flatline_graph_signal();
             }
 
@@ -142,6 +154,7 @@ void AED::handleAnalyze() {
 }
 
 void AED::handleShock() {
+    cout << "RESCUER: Delivers shock" << endl;
     currentStep = 5;
     display->getLCD()->setMessage("SHOCK WILL BE DELIVERED IN 3, 2, 1");
     electrode->shock(voltage);
@@ -165,6 +178,7 @@ void AED::setDelayedMessage(const string message, int delay) {
 void AED::handleAttach(bool left, bool right, bool back, bool ripped, bool towel, bool clip) {
 
     if(checkPads(left, right, back, ripped, towel, clip)) {
+        cout << "RESCUER: Attached electrode pads" << endl;
         currentStep = 4;
         if(electrode->isElectrodePluggedIn()) {
             display->getGraphics()->illuminateGraphic(4);
@@ -189,6 +203,7 @@ void AED::decrementBatteryLevel() {
 }
 
 void AED::handleCompress(bool pressedHardEnough) {
+    cout << "RESCUER: Performs compressions" << endl;
     currentStep = 5;
     display->getLCD()->setMessage("START CPR");
     if (pressedHardEnough) {
@@ -210,6 +225,7 @@ void AED::handleCompress(bool pressedHardEnough) {
 }
 
 void AED::handleBreathe() {
+    cout << "RESCUER: Delivers 2 breaths" << endl;
     currentStep = 7;
     ecgIndex++; //Increment the index so we can get the next rhythm before analyzing
     QTimer::singleShot(4000, this, [=]() {

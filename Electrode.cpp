@@ -5,5 +5,5 @@ Electrode::Electrode(){
 }
 
 void Electrode::shock(int voltage){
-    cout << "SHOCK of " << voltage << " volts administered." << endl;
+    cout << "ELECTRODE: Shock of " << voltage << " volts administered" << endl;
 }
