@@ -17,6 +17,7 @@ class LCD : public QObject {
         QTimer* getTimer() { return timer; }
         void resetElapsedTime();
         void updateShockCount(int shockCount);
+        void resetECG() { emit callHandleResetECG(); }
 
     private slots:
         void updateElapsedTime();
@@ -27,6 +28,7 @@ class LCD : public QObject {
 
     signals:
         void callHandlelogToDisplay(string message, string type);
+        void callHandleResetECG();
 
 };
 #endif // LCD_H

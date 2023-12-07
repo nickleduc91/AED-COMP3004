@@ -48,6 +48,7 @@ private slots:
 public slots:
     void handleIlluminateGraphic(int step);
     void handleLogToDisplay(string message, string type);
+    void handleResetECG();
     void handleStatusUpdate(string message, bool status);
     void vfib_graph_slot();
     void vtac_graph_slot();

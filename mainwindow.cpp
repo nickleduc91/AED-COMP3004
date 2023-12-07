@@ -55,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(aed, SIGNAL(updateBatteryLevel(int)), this, SLOT(updateBatteryLevel(int)));
     connect(aed, SIGNAL(deadBattery()), this, SLOT(deadAED()));
     connect(aed, SIGNAL(pushHarder()), this, SLOT(needHarderCompressions()));
+    connect(aed->display->getLCD(), &LCD::callHandleResetECG, this, &MainWindow::handleResetECG);
 
     //Graph signals
     connect(aed, &AED::vfib_graph_signal, this, &MainWindow::vfib_graph_slot);
@@ -72,6 +73,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::handleResetECG() {
+    ui->ecgGraph->graph(0)->data().data()->clear();
+    ui->ecgGraph->replot();
+}
 void MainWindow::onSpinBoxAgeChanged(int age) {
     if(age <= 8) {
         ui->hairyChestBox->setDisabled(true);

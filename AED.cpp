@@ -15,12 +15,17 @@ AED::AED() {
     //Populate ECG data for victim
     ecgIndex = 0;
     std::srand(std::time(0));
-    for(int i = 0; i < 100; i++) {
-        //Generate bit randomly to decide what ecg value we are on
-        int randomNumber = std::rand() % 4;
+    while (true) {
+        // Generate a random number with a bias towards VTach, VFib, and Flatline
+        int randomNumber;
+        if (std::rand() % 10 < 3) {  // 30% chance for 0 ("Normal")
+            randomNumber = 0;
+        } else {
+            randomNumber = 1 + std::rand() % 3;  // 70% chance for 1, 2, or 3
+        }
         victimECG.push_back(randomNumber);
+        if(randomNumber == 0) break;
     }
-
 
     //Slot to check if battery needs to be decremented after evry 10 seconds
     connect(display->getLCD()->getTimer(), SIGNAL(timeout()), this, SLOT(decrementBatteryLevel()));
@@ -81,13 +86,14 @@ void AED::handlePowerOn() {
 }
 
 void AED::handlePowerOff() {
-    cout << "AED: Powered On" << endl;
+    cout << "AED: Powered Off" << endl;
     isPoweredOn = false;
     currentStep = 0;
     // Stop the timer and remove messages on LCD
     display->getLCD()->getTimer()->stop();
     display->getLCD()->resetElapsedTime();
     display->getLCD()->setMessage("");
+    display->getLCD()->resetECG();
 
 }
 
@@ -178,7 +184,16 @@ void AED::setDelayedMessage(const string message, int delay) {
 void AED::handleAttach(bool left, bool right, bool back, bool ripped, bool towel, bool clip) {
 
     if(checkPads(left, right, back, ripped, towel, clip)) {
-        cout << "RESCUER: Attached electrode pads" << endl;
+        if(isAdult()) {
+            if(isVictimOverWeight) {
+                cout << "RESCUER: Attached electrode pads to overweight victim" << endl;
+            } else {
+                cout << "RESCUER: Attached electrode pads to adult victim" << endl;
+            }
+        } else if(!isAdult()) {
+            cout << "RESCUER: Attached electrode pads to child victim" << endl;
+        }
+
         currentStep = 4;
         if(electrode->isElectrodePluggedIn()) {
             display->getGraphics()->illuminateGraphic(4);
@@ -227,16 +242,22 @@ void AED::handleCompress(bool pressedHardEnough) {
 void AED::handleBreathe() {
     cout << "RESCUER: Delivers 2 breaths" << endl;
     currentStep = 7;
-    ecgIndex++; //Increment the index so we can get the next rhythm before analyzing
-    QTimer::singleShot(4000, this, [=]() {
-        if(electrode->isElectrodePluggedIn()) {
-            display->getGraphics()->illuminateGraphic(4);
-        } else {
-            display->getGraphics()->disableStep(4);
-        }
+    //Victim has a sinus heart rhythm and no longer needs the AED
+    if(getRhythm() == 0) {
+        handlePowerOff();
+    } else {
+        ecgIndex++; //Increment the index so we can get the next rhythm before analyzing
+        QTimer::singleShot(4000, this, [=]() {
+            if(electrode->isElectrodePluggedIn()) {
+                display->getGraphics()->illuminateGraphic(4);
+            } else {
+                display->getGraphics()->disableStep(4);
+            }
 
-        currentStep = 4;
-    });
+            currentStep = 4;
+        });
+    }
+
 }
 
 void AED::failedSelfTest() {
