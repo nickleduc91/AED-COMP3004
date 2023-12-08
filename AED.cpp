@@ -1,18 +1,19 @@
 #include "AED.h"
 
 AED::AED() {
+    //AED Constructor
     Display* d = new Display();
     Electrode* e = new Electrode();
     display = d;
     electrode = e;
-
+    //Setting Default Values
     isPoweredOn = false;
     batteryLevel = 100;
     totalTime = 0;
     voltage = 10;
     shockCount = 0;
 
-    //Populate ECG data for victim
+    //Populate ECG data for victim (heart rhythhm sequences)
     ecgIndex = 0;
     std::srand(std::time(0));
     while (true) {
@@ -24,7 +25,6 @@ AED::AED() {
             randomNumber = 1 + std::rand() % 3;  // 70% chance for 1, 2, or 3
         }
         victimECG.push_back(randomNumber);
-        if(randomNumber == 0) break;
     }
 
     //Slot to check if battery needs to be decremented after evry 10 seconds
@@ -33,6 +33,9 @@ AED::AED() {
 }
 
 void AED::handlePlugInOutElectrode() {
+    //Handles what happens when the electrodes of the AED are unplugged
+    //With not electrode plugged in, we cannot use the AED, so we disable steps that require analyzing
+    //If electrodes  are  plugged in, every step will work
     if(electrode->isElectrodePluggedIn()) {
         cout << "ELECTRODE: Unplugged" << endl;
         electrode->setElectrodePluggedIn(false);
@@ -72,6 +75,9 @@ void AED::handlePlugInOutElectrode() {
 }
 
 void AED::handlePowerOn() {
+    //Turns on AED
+    //Begins Timer
+    //Illumniates first step, check responsiveness
     isPoweredOn = true;
     cout << "AED: Powered On" << endl;
     display->getLCD()->getTimer()->start(1000); //Start timer
@@ -86,6 +92,11 @@ void AED::handlePowerOn() {
 }
 
 void AED::handlePowerOff() {
+    //Turns off AED
+    //Resets current step
+    //Resets ECG
+    //Clears display
+    //Stops time
     cout << "AED: Powered Off" << endl;
     isPoweredOn = false;
     currentStep = 0;
@@ -98,6 +109,9 @@ void AED::handlePowerOff() {
 }
 
 void AED::handleNewBatteries() {
+    //When batteries are changed
+    //Reset AED's time
+
     cout << "AED: Batteries changed" << endl;
     display->getLCD()->getTimer()->stop();
     display->getLCD()->resetElapsedTime();
@@ -106,6 +120,9 @@ void AED::handleNewBatteries() {
 }
 
 void AED::handleCheckResponsiveness() {
+    //This is when the user (Rescuer) checks responsiveness of the patient
+    //We highlight the next step, the correct graphic and prompt the LCD
+
     cout << "RESCUER: Checks responsiveness" << endl;
     display->getGraphics()->illuminateGraphic(2);
     currentStep = 2;
@@ -113,6 +130,8 @@ void AED::handleCheckResponsiveness() {
 }
 
 void AED::handleCallForHelp() {
+    //This is when the user (Rescuer) calls for help for the patient
+    //We highlight the next step, the correct graphic and prompt the LCD
     cout << "RESCUER: Calls for help" << endl;
     display->getGraphics()->illuminateGraphic(3);
     currentStep = 3;
@@ -120,6 +139,16 @@ void AED::handleCallForHelp() {
 }
 
 void AED::handleAnalyze() {
+    //This is when the user (Rescuer) begins analyzing the patient
+    //We get the type of heart rhymthm (originally sequenced in the constructor)
+    //Depdending on type of heart rhythm detected, we output the corresponding ECG graph
+
+    //We prompt the user (Rescuer) an advisory to shock the patient if experiencing fibrillation or tachycardia
+    //The AED then illminates the correct graphic and leads the user to the next step
+
+    //We prompt the user (Rescuer) an advisory to perform CPR (compression and breaths) too the patient if experiencing sinus or flatline rhythms
+    //The AED then illminates the correct graphic and leads the user to the next step
+
     cout << "AED: Analyzing" << endl;
     currentStep = 4;
     display->getLCD()->setMessage("DON'T TOUCH PATIENT, ANALYZING");
@@ -160,6 +189,10 @@ void AED::handleAnalyze() {
 }
 
 void AED::handleShock() {
+    //Here we handle what happens when the user delivers a shock
+    //We manage each shock in the shock count
+    //We direct them to the next step, CPR, after shock is issued
+
     cout << "RESCUER: Delivers shock" << endl;
     currentStep = 5;
     display->getLCD()->setMessage("SHOCK WILL BE DELIVERED IN 3, 2, 1");
@@ -176,12 +209,16 @@ void AED::handleShock() {
 }
 
 void AED::setDelayedMessage(const string message, int delay) {
+    //This is a helper function to display text with a delay
     QTimer::singleShot(delay, this, [=]() {
         display->getLCD()->setMessage(message);
     });
 }
 
 void AED::handleAttach(bool left, bool right, bool back, bool ripped, bool towel, bool clip) {
+    //This is a function to handle attaching pads
+    //We ensure that the pads are attached correctly, depending on age, weight, wetness, and hair
+    //Once we attach, we move to the next step
 
     if(checkPads(left, right, back, ripped, towel, clip)) {
         if(isAdult()) {
@@ -266,12 +303,18 @@ void AED::failedSelfTest() {
 
 bool AED::checkPads(bool left, bool right, bool back, bool ripped, bool towel, bool clip){
 
-    //Only use electrodes labeled “Infant/Child” on children less than 8 years old or weighing less than
-    //55 lbs (25 kg). Use CPR-D-padz® if victim is older than 8 years or weighs more than 55 lbs (25 kg)
+    //This is a helper function to see if the pads are attached correctly
+    //We take into account the patient's weight, age, their wetness, and hair
 
-    //if adult - bool left, bool right
-    //if child - bool right or bool left, and bool back
-    //if overweight - book ripped, bool left, bool right
+    //The attributes checked are as follows
+
+    //If victim is an adult, we need attachment to the right and left pads to the chest
+    //If the victim is a child, we need attachment either to the right and back or left and back
+
+    //If the victim is overweight, we need to rip the electrodes and attach them
+
+    //If the victim is wet, we need to dry them with a towel
+    //If the victim is hairy, we need to clip their hair off
 
     if(!isVictimAdult){
         if(((back && left && !right) || (back && right && !left)) && ( (isVictimWet && towel) || !isVictimWet) && ( (isVictimHairy && clip) || !isVictimHairy) ){
@@ -305,6 +348,9 @@ bool AED::checkPads(bool left, bool right, bool back, bool ripped, bool towel, b
 }
 
 bool AED::performSelfTest(bool ecgCircuitry,bool defibCharge,bool microprocessor,bool cprCircuitrySensor,bool audioCircuitry) {
+    //This performs a self test to see if the AED is fully functional, performed at the start of each power on
+    //It requires that the electrodes are plugged in, functional ECG circuitry, functional microprocesor, functional audio circuitry, a functional circuitry sensor, and charge in the defibrillator
+
     string statusMessage = "FAILED";
     if(batteryLevel > 10 && electrode->isElectrodePluggedIn() && !ecgCircuitry && !defibCharge && !microprocessor && !cprCircuitrySensor && !audioCircuitry){
         isPassedTest = true;
@@ -317,6 +363,9 @@ bool AED::performSelfTest(bool ecgCircuitry,bool defibCharge,bool microprocessor
 }
 
 void AED::setVictim(int age, int weight, bool isHairy, bool isWet) {
+    //Here is where we set the victim of the AED
+    //We correct the voltage depending on age
+
     victimAge = age;
     victimWeight = weight;
     isVictimHairy = isHairy;
