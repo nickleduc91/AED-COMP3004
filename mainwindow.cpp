@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     //Disable all buttons until power is on
     disableButtons();
 
-    //Slots
+    //Singals and Slots for UI buttons to handle functionality when pressing them
     connect(ui->powerButton, SIGNAL(released()), this, SLOT(powerOn()));
     connect(ui->checkButton, SIGNAL(released()), this, SLOT(checkResponsiveness()));
     connect(ui->callButton, SIGNAL(released()), this, SLOT(callForHelp()));
@@ -25,11 +25,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->breatheButton, SIGNAL(released()), this, SLOT(breaths()));
     connect(ui->plugInOutButton, SIGNAL(released()), this, SLOT(plugInOut()));
 
-    //Graph setup
+    //ECG Graph setup
     ui->ecgGraph->addGraph();
     ui->ecgGraph->graph(0)->setLineStyle(QCPGraph::lsLine);
     ui->ecgGraph->xAxis->setRange(0,1000);
     ui->ecgGraph->yAxis->setRange(0,140);
+    ui->ecgGraph->xAxis->setTickLabels(false);
+    ui->ecgGraph->yAxis->setTickLabels(false);
 
     //Set up the log info section on the GUI
     label = new QLabel(this);
@@ -44,10 +46,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->consoleScrollArea->setWidget(scrollContent);
     ui->status_text->setStyleSheet("background-color: white; border:");
 
+    //Creating the AED
     AED* aedDevice = new AED();
     aed = aedDevice;
 
-    //Signals
+    //Singals and Slots to handle functionality from other classses
     connect(aed->display->getGraphics(), &Graphics::callHandleIlluminateGraphic, this, &MainWindow::handleIlluminateGraphic);
     connect(aed->display->getGraphics(), &Graphics::callHandleDisableStep, this, &MainWindow::handleDisableStep);
     connect(aed->display->getLCD(), &LCD::callHandlelogToDisplay, this, &MainWindow::handleLogToDisplay);
@@ -57,27 +60,27 @@ MainWindow::MainWindow(QWidget *parent)
     connect(aed, SIGNAL(pushHarder()), this, SLOT(needHarderCompressions()));
     connect(aed->display->getLCD(), &LCD::callHandleResetECG, this, &MainWindow::handleResetECG);
 
-    //Graph signals
+    //Signals and Slots to handle functionality for the graphs
     connect(aed, &AED::vfib_graph_signal, this, &MainWindow::vfib_graph_slot);
     connect(aed, &AED::vtac_graph_signal, this, &MainWindow::vtac_graph_slot);
     connect(aed, &AED::normal_graph_signal, this, &MainWindow::normal_graph_slot);
     connect(aed, &AED::flatline_graph_signal, this, &MainWindow::flatline_graph_slot);
-
-    ui->ecgGraph->xAxis->setTickLabels(false);
-    ui->ecgGraph->yAxis->setTickLabels(false);
-
 }
 
 MainWindow::~MainWindow()
 {
+    //Destructor for MainWindow
     delete ui;
 }
 
 void MainWindow::handleResetECG() {
+    //Handle resetting the ECG graph
+    //Clear all the data points
     ui->ecgGraph->graph(0)->data().data()->clear();
     ui->ecgGraph->replot();
 }
 void MainWindow::onSpinBoxAgeChanged(int age) {
+    //Handles if patient has a hairy chest that is required to shave to use AED
     if(age <= 8) {
         ui->hairyChestBox->setDisabled(true);
         ui->hairyChestBox->setChecked(false);
@@ -87,15 +90,19 @@ void MainWindow::onSpinBoxAgeChanged(int age) {
 }
 
 void MainWindow::plugInOut() {
+    //Handles plugging in Electrode
+    //Button labels
     if(!aed->electrode->isElectrodePluggedIn()) {
         ui->plugInOutButton->setText("Unplug Electrode");
     } else {
         ui->plugInOutButton->setText("Plug In Electrode");
     }
+    //AED functions when Electrodes are plugged in
     aed->handlePlugInOutElectrode();
 }
 
 void MainWindow::powerOn() {
+    //Handles turning on the AED
     if(!aed->isOn()) {
         //setting self test variables from ui
         bool ecgCircuitry = ui->ecg_circuitry->isChecked();
@@ -112,8 +119,9 @@ void MainWindow::powerOn() {
 
         aed->setVictim(victimAge, victimWeight, isHairy, isWet);
 
-        //Disable clipper based on age
+        //Disable clipper based on age (hair is associated with age)
         isHairy ? ui->useClipperBox->setDisabled(false) : ui->useClipperBox->setDisabled(true);
+        //Disable towel based on if patient is wet
         isWet ? ui->useTowelBox->setDisabled(false) : ui->useTowelBox->setDisabled(true);
 
         //Disable height and weight spinners when aed turns on
@@ -127,6 +135,7 @@ void MainWindow::powerOn() {
         ui->aedFrame->setStyleSheet(nullptr);
         aed->handlePowerOn();
     } else {
+        //turn of display when AED is off
         disableButtons();
         //Enable height and weight spinners when aed turns off
         ui->ageBox->setEnabled(true);
@@ -140,15 +149,21 @@ void MainWindow::powerOn() {
 }
 
 void MainWindow::deadAED(){
+    //When battery is dead, sets battery to 0, display to black
+    //Highlights change battery button
+    //Displays to LCD to change batteries
     ui->battery_lcd->display(0);
     ui->battery_lcd->setStyleSheet("background-color: black; color: white; border-radius: 7px;");
     ui->changeBatteries->setStyleSheet("background-color: yellow;");
+    //This toggles the power to off
     aed->setIsPoweredOn(true);
     aed->setDelayedMessage("CHANGE BATTERIES", 1000);
     powerOn();
 }
 
 void MainWindow::updateBatteryLevel(int batteryLevel) {
+    //Updates battery level display depending on battery level
+    //Sets colour to correspond with battery level
     ui->battery_lcd->display(batteryLevel);
     if (batteryLevel <= 20 && batteryLevel > 10){
         ui->battery_lcd->setStyleSheet("background-color: yellow; border-radius: 7px;");
@@ -158,36 +173,45 @@ void MainWindow::updateBatteryLevel(int batteryLevel) {
 }
 
 void MainWindow::checkResponsiveness() {
+    //Prompts the user to check responsiveness of patient
     aed->handleCheckResponsiveness();
 }
 
 void MainWindow::callForHelp() {
+    //Prompts the user to call for help
     aed->handleCallForHelp();
 }
 
 void MainWindow::attach() {
-
+    //AED checks for correct electrode placement when atttaching
     bool isLeftChecked = ui->leftNipBox->isChecked();
     bool isRightChecked = ui->rightNipBox->isChecked();
     bool isbackBoxChecked = ui->backBox->isChecked();
     bool istearPadChecked = ui->tearPadBox->isChecked();
     bool towel = ui->useTowelBox->isChecked();
     bool clip = ui->useClipperBox->isChecked();
-
+    //Handles attaching electrodes to user
     aed->handleAttach(isLeftChecked, isRightChecked, isbackBoxChecked, istearPadChecked, towel, clip);
 }
 
 void MainWindow::analyze() {
+    //Handles analyzing patient's condition once electrodes are placed
     aed->handleAnalyze();
 }
 
 void MainWindow::shock() {
+    //Handles administering shock to patient
     aed->handleShock();
 }
 
 void MainWindow::compress() {
+    //Disables compress button once pressed
+
     ui->compressButton->setStyleSheet("");
     ui->compressButton->setEnabled(false);
+
+    //Checks if compressions administered to patient are of correct depth specification (Adult vs Child)
+    //Handles administering compressions to patient
 
     if ((aed->isAdult() && (ui->twoInches->isChecked() || ui->twoAndHalfInches->isChecked())) || (!aed->isAdult() && (ui->oneAndHalfInches->isChecked() || ui->twoInches->isChecked() || ui->twoAndHalfInches->isChecked()))){
        aed->handleCompress(true);
@@ -197,17 +221,21 @@ void MainWindow::compress() {
 }
 
 void MainWindow::breaths() {
+    //Disables breathe button once pressed
     ui->breatheButton->setStyleSheet("");
     ui->breatheButton->setEnabled(false);
+    //Handles administering breathes to patient
     aed->handleBreathe();
 }
 
 void MainWindow::needHarderCompressions() {
+    //If compressions are not deep enough, prompt user for harder compressions and reenables compress button
     ui->compressButton->setEnabled(true);
     ui->compressButton->setStyleSheet("background-color: yellow;");
 }
 
 void MainWindow::logInfo(const string message) {
+    //Used for forrmatting and displaying text on UI (LCD)
     QString textToAdd = QString::fromStdString(message);
 
     // Split the message into words
@@ -225,7 +253,7 @@ void MainWindow::logInfo(const string message) {
     }
 }
 
-//Function to handle updating the status of the elevators
+//Function to handle updating the the graphics
 void MainWindow::handleIlluminateGraphic(int step) {
     if(step == 1) {
         ui->checkButton->setStyleSheet("background-color: yellow;");
@@ -265,6 +293,7 @@ void MainWindow::handleIlluminateGraphic(int step) {
 }
 
 void MainWindow::handleLogToDisplay(string message, string type) {
+    //Handles updating messages on UI based on message type.
     if(type == "time") {
         ui->elapsedTimeLabel->setText(QString::fromStdString(message));
     } else if(type == "shock") {
@@ -276,6 +305,7 @@ void MainWindow::handleLogToDisplay(string message, string type) {
 }
 
 void MainWindow::handleStatusUpdate(string message,bool status) {
+    //Handles updating UI based on AED status (working/not working)
     ui->status_text->setText(QString::fromStdString(message));
     if(status){
         ui->status_text->setStyleSheet("color: green;border: 1px solid green; background-color: white;");
@@ -287,11 +317,13 @@ void MainWindow::handleStatusUpdate(string message,bool status) {
 }
 
 void MainWindow::changeBatteries() {
+    //Handles chaning the batteries of the AED
     aed->setBatteryLevel(100);
     ui->battery_lcd->display(100);
     ui->battery_lcd->setStyleSheet("background-color: rgb(46, 194, 126); color: rgb(255, 255, 255); border-radius: 7px;");
     ui->changeBatteries->setStyleSheet(""); //clears the styleSheet and sets the background to normal
     aed->handleNewBatteries();
+    //Toggles power to On
     aed->setIsPoweredOn(true);
     powerOn();
 }
@@ -326,6 +358,7 @@ void MainWindow::disableButtons() {
 }
 
 void MainWindow::handleDisableStep(int step) {
+    //Handles disabling certain buttons based on current AED step
     if(step == 4) {
         ui->analyzeButton->setDisabled(true);
         ui->analyzeButton->setStyleSheet("");
@@ -339,29 +372,32 @@ void MainWindow::handleDisableStep(int step) {
 }
 
 void MainWindow::vfib_graph_slot(){
+    //Generating VFIB pattern for ECG Graph
     QVector<double> x, y;
-    //VFIB
+    //Handles generating random numbers for chaotic representation of VFIB pattern
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(0, 100.0); // Range for random values
-    const double step = 2; // Define the step size for x-values
+    //Populate Y values. Constant for loop through, because X values correspond to time
+    //Step is used for scale
+    const double step = 2;
        for (int i = 0; i <= 100; i += step) {
-           double x_val = i / 10.0; // Scale down the x-values to fit the plot
+           double x_val = i / 10.0;
 
            // Generate random values for a and b
            double a = (3 * dis(gen)) - (3 * dis(gen));
            double b = (2 * dis(gen)) - (2 * dis(gen));
 
-           // Calculate s1 based on a, b, and x_val
+           // Calculate a Y value derived from a sin wave value based on x value and random a & b values
            double result = 0.0;
-           for (int n = 1; n <= 100; ++n) { // You might adjust the upper limit of the loop according to your needs
+           for (int n = 1; n <= 100; ++n) {
                result += sin((a * x_val * M_PI) + b) / (0.01 * n + 8);
            }
 
            x.append(x_val);
            y.append(result);
     }
-
+    //Plot VFIB pattern on ECG graph
     ui->ecgGraph->xAxis->setTickLabels(false);
     ui->ecgGraph->yAxis->setTickLabels(false);
     ui->ecgGraph->graph(0)->setData(x, y);
@@ -372,16 +408,20 @@ void MainWindow::vfib_graph_slot(){
 }
 
 void MainWindow::vtac_graph_slot(){
+    //Generating VTAC pattern for ECG Graph
+    //Pattern is of repeating humps
     QVector<double> x, y;
-    //VTAC
-    const double step = 2; // Define the step size for x-values
+    //Populate Y values. Constant for loop through, because X values correspond to time
+    //Step is used for scale
+    const double step = 2;
     for (int i = 0; i <= 100; i += step) {
-        double x_val = i / 10.0; // Scale down the x-values to fit the plot
+        // Calculate a Y value derived from a sin wave value based on X value
+        double x_val = i / 10.0;
         double result = 6 * (fabs(sin(x_val))) * fabs(sin(x_val));
         x.append(x_val);
         y.append(result);
     }
-
+    //Plot VTAC pattern on ECG graph
     ui->ecgGraph->xAxis->setTickLabels(false);
     ui->ecgGraph->yAxis->setTickLabels(false);
     ui->ecgGraph->graph(0)->setData(x, y);
@@ -392,12 +432,15 @@ void MainWindow::vtac_graph_slot(){
 }
 
 void MainWindow::normal_graph_slot(){
+    //Generating Normal Pattern for ECG Graph
+    //Pattern is of steady rhythm and rate
     QVector<double> x, y;
-
-    //NORMAL
+    //Populate Y values. Constant for loop through, because X values correspond to time
+    //Step is used for scale
     const double step = 2;
     for (int i = 0; i <= 300; i += step) {
-            double x_val = i / 10.0; // Scale down the x-values to fit the plot
+            // Calculate a Y value derived from a sin wave value based on X value
+            double x_val = i / 10.0;
             double result = (-0.5 * pow(sin(0.3 * x_val - 3), 10) +
                             0.8 * pow(sin(0.3 * x_val + 5.5), 22) +
                             7 * pow(sin(0.3 * x_val), 300) +
@@ -406,7 +449,7 @@ void MainWindow::normal_graph_slot(){
             x.append(x_val);
             y.append(result);
     }
-
+    //Plot Normal pattern on ECG graph
     ui->ecgGraph->xAxis->setTickLabels(false);
     ui->ecgGraph->yAxis->setTickLabels(false);
     ui->ecgGraph->graph(0)->setData(x, y);
@@ -417,9 +460,10 @@ void MainWindow::normal_graph_slot(){
 }
 
 void MainWindow::flatline_graph_slot(){
+    //Generating a Flatline pattern for ECG Graph
     QVector<double> x ={0,1}, y = {5,5};
-
-
+    //Simple data points to create a flat line
+    //Plot flatline pattern on ECG graph
     ui->ecgGraph->xAxis->setTickLabels(false);
     ui->ecgGraph->yAxis->setTickLabels(false);
     ui->ecgGraph->graph(0)->setData(x, y);
