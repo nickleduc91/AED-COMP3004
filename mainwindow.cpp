@@ -24,6 +24,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->ageBox, SIGNAL(valueChanged(int)), this, SLOT(onSpinBoxAgeChanged(int)));
     connect(ui->breatheButton, SIGNAL(released()), this, SLOT(breaths()));
     connect(ui->plugInOutButton, SIGNAL(released()), this, SLOT(plugInOut()));
+    connect(ui->VTachButton, SIGNAL(released()), this, SLOT(VTach()));
+    connect(ui->VFibButton, SIGNAL(released()), this, SLOT(VFib()));
+    connect(ui->flatlineButton, SIGNAL(released()), this, SLOT(flatline()));
+    connect(ui->sinusButton, SIGNAL(released()), this, SLOT(sinus()));
 
     //ECG Graph setup
     ui->ecgGraph->addGraph();
@@ -59,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(aed, SIGNAL(deadBattery()), this, SLOT(deadAED()));
     connect(aed, SIGNAL(pushHarder()), this, SLOT(needHarderCompressions()));
     connect(aed->display->getLCD(), &LCD::callHandleResetECG, this, &MainWindow::handleResetECG);
+    connect(aed, &AED::enableRhythms, this, &MainWindow::handleEnableRhythms);
 
     //Signals and Slots to handle functionality for the graphs
     connect(aed, &AED::vfib_graph_signal, this, &MainWindow::vfib_graph_slot);
@@ -71,6 +76,37 @@ MainWindow::~MainWindow()
 {
     //Destructor for MainWindow
     delete ui;
+}
+
+void MainWindow::handleEnableRhythms(bool enable) {
+    if(enable) {
+        ui->VFibButton->setEnabled(true);
+        ui->VTachButton->setEnabled(true);
+        ui->flatlineButton->setEnabled(true);
+        ui->sinusButton->setEnabled(true);
+    } else {
+        ui->VFibButton->setDisabled(true);
+        ui->VTachButton->setDisabled(true);
+        ui->flatlineButton->setDisabled(true);
+        ui->sinusButton->setDisabled(true);
+    }
+
+}
+
+void MainWindow::sinus() {
+    aed->handleRhythmChange(0);
+}
+
+void MainWindow::VTach() {
+    aed->handleRhythmChange(2);
+}
+
+void MainWindow::VFib() {
+    aed->handleRhythmChange(1);
+}
+
+void MainWindow::flatline() {
+    aed->handleRhythmChange(3);
 }
 
 void MainWindow::handleResetECG() {

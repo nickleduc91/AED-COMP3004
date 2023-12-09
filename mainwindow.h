@@ -44,6 +44,10 @@ private slots:
     void needHarderCompressions();
     void breaths();
     void plugInOut();
+    void VFib();
+    void VTach();
+    void sinus();
+    void flatline();
 
 public slots:
     void handleIlluminateGraphic(int step);
@@ -55,5 +59,6 @@ public slots:
     void normal_graph_slot();
     void flatline_graph_slot();
     void handleDisableStep(int step);
+    void handleEnableRhythms(bool enable);
 };
 #endif // MAINWINDOW_H

@@ -786,6 +786,70 @@ border-radius: 7px;</string>
      <enum>QFrame::Raised</enum>
     </property>
    </widget>
+   <widget class="QPushButton" name="VTachButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>1230</x>
+      <y>510</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>VTach</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="VFibButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>1340</x>
+      <y>510</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>VFib</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="flatlineButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>1230</x>
+      <y>550</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Flatline</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="sinusButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>1340</x>
+      <y>550</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Sinus</string>
+    </property>
+   </widget>
    <zorder>aedFrame</zorder>
    <zorder>powerButton</zorder>
    <zorder>label</zorder>
@@ -825,6 +889,10 @@ border-radius: 7px;</string>
    <zorder>oneInch</zorder>
    <zorder>twoAndHalfInches</zorder>
    <zorder>oneAndHalfInches</zorder>
+   <zorder>VTachButton</zorder>
+   <zorder>VFibButton</zorder>
+   <zorder>flatlineButton</zorder>
+   <zorder>sinusButton</zorder>
   </widget>
  </widget>
  <customwidgets>

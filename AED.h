@@ -28,6 +28,7 @@ class AED : public QObject {
         void handleNewBatteries();
         void failedSelfTest();
         void handlePlugInOutElectrode();
+        void handleRhythmChange(int rhythm) { victimECG.at(ecgIndex) = rhythm; }
 
         bool checkPads(bool left, bool right, bool back, bool ripped, bool towel, bool clip); // Check if the pads were attached properly
 
@@ -84,5 +85,6 @@ class AED : public QObject {
         void vtac_graph_signal();
         void normal_graph_signal();
         void flatline_graph_signal();
+        void enableRhythms(bool enable);
 };
 #endif // AED_H

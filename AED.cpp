@@ -16,7 +16,7 @@ AED::AED() {
     //Populate ECG data for victim (heart rhythhm sequences)
     ecgIndex = 0;
     std::srand(std::time(0));
-    while (true) {
+    for (int i = 0; i < 100; i++) {
         // Generate a random number with a bias towards VTach, VFib, and Flatline
         int randomNumber;
         if (std::rand() % 10 < 3) {  // 30% chance for 0 ("Normal")
@@ -185,6 +185,7 @@ void AED::handleAnalyze() {
         }
 
     });
+    emit enableRhythms(false);
 
 }
 
@@ -233,6 +234,7 @@ void AED::handleAttach(bool left, bool right, bool back, bool ripped, bool towel
 
         currentStep = 4;
         if(electrode->isElectrodePluggedIn()) {
+            emit enableRhythms(true);
             display->getGraphics()->illuminateGraphic(4);
         } else {
             display->getGraphics()->disableStep(4);
@@ -281,6 +283,7 @@ void AED::handleBreathe() {
     currentStep = 7;
     //Victim has a sinus heart rhythm and no longer needs the AED
     if(getRhythm() == 0) {
+        ecgIndex++; //Increment the index so we can get the next rhythm before analyzing
         handlePowerOff();
     } else {
         ecgIndex++; //Increment the index so we can get the next rhythm before analyzing
@@ -290,6 +293,7 @@ void AED::handleBreathe() {
             } else {
                 display->getGraphics()->disableStep(4);
             }
+            emit enableRhythms(true);
 
             currentStep = 4;
         });
