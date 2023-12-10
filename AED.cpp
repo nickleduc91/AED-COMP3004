@@ -83,7 +83,6 @@ void AED::handlePowerOn() {
     display->getLCD()->getTimer()->start(1000); //Start timer
     display->getLCD()->setMessage("UNIT OKAY");
     currentStep = 1;
-
     QTimer::singleShot(2000, this, [=]() {
         display->getGraphics()->illuminateGraphic(1);
         display->getLCD()->setMessage("CHECK RESPONSIVENESS");
@@ -100,6 +99,8 @@ void AED::handlePowerOff() {
     cout << "AED: Powered Off" << endl;
     isPoweredOn = false;
     currentStep = 0;
+    display->getLCD()->updateShockCount(0);
+    shockCount = 0;
     // Stop the timer and remove messages on LCD
     display->getLCD()->getTimer()->stop();
     display->getLCD()->resetElapsedTime();
@@ -222,6 +223,7 @@ void AED::handleAttach(bool left, bool right, bool back, bool ripped, bool towel
     //Once we attach, we move to the next step
 
     if(checkPads(left, right, back, ripped, towel, clip)) {
+        emit enableRhythms(true);
         if(isAdult()) {
             if(isVictimOverWeight) {
                 cout << "RESCUER: Attached electrode pads to overweight victim" << endl;
@@ -234,7 +236,6 @@ void AED::handleAttach(bool left, bool right, bool back, bool ripped, bool towel
 
         currentStep = 4;
         if(electrode->isElectrodePluggedIn()) {
-            emit enableRhythms(true);
             display->getGraphics()->illuminateGraphic(4);
         } else {
             display->getGraphics()->disableStep(4);
@@ -245,7 +246,7 @@ void AED::handleAttach(bool left, bool right, bool back, bool ripped, bool towel
 void AED::decrementBatteryLevel() {
     if (isPoweredOn) {
         totalTime++;
-        if (totalTime % 10 == 0) { // Decrement battery every 10 seconds
+        if (totalTime % 2 == 0) { // Decrement battery every 10 seconds
             batteryLevel = qMax(0, batteryLevel - 1); // Ensure the batteryLevel doesn't go below 0
             if (batteryLevel == 0){
                 emit deadBattery();
