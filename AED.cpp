@@ -381,7 +381,7 @@ void AED::setVictim(int age, int weight, bool isHairy, bool isWet) {
     }else{
         isVictimAdult = true;
         voltage = 10; //Adjust voltage to adult
-        if(weight > 250){
+        if(weight >= 250){
             isVictimOverWeight = true;
         }else{
             isVictimOverWeight = false;
