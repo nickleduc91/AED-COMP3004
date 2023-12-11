@@ -30,6 +30,7 @@ Matthew Shein
 	- Attach Defib pads
 - Comments
 - Video
+- Design patterns
 
 Nicholas Leduc
 - Use cases
