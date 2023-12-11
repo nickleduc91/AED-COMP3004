@@ -22,6 +22,8 @@ Kyle Liwanag
 - Traceability Matrix
 - State Diagram
 - Design decisions
+	- State UML Diagram
+	- Sequence UML Diagrams
 
 Matthew Shein
 - UI
@@ -30,7 +32,8 @@ Matthew Shein
 	- Attach Defib pads
 - Comments
 - Video
-- Design patterns
+- Design decisions 
+	- Class UML Diagram
 
 Nicholas Leduc
 - Use cases
